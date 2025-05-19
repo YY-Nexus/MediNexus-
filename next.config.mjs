@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -7,8 +9,21 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
+    domains: ['localhost', 'blob.v0.dev'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'blob.v0.dev',
+        port: '',
+        pathname: '/**',
+      },
+    ],
     unoptimized: true,
   },
-}
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ['lucide-react', 'recharts'],
+  },
+};
 
-export default nextConfig
+export default nextConfig;
