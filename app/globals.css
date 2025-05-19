@@ -1,0 +1,318 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .vertical-gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#06c] to-[#00a3e0] font-bold;
+  }
+
+  .float-element {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* 添加平滑过渡效果 */
+  .sidebar-transition {
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s
+      cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sidebar-item-transition {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sidebar-content-transition {
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* 新增 - 3D按钮效果 */
+  .button-3d {
+    transform: translateY(0);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .button-3d:active {
+    transform: translateY(4px);
+    box-shadow: none !important;
+  }
+
+  /* 新增 - 波纹效果 */
+  .ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* 新增 - 悬浮卡片效果 */
+  .hover-float {
+    transition: transform 0.3s ease;
+  }
+
+  .hover-float:hover {
+    transform: translateY(-8px);
+  }
+
+  /* 新增 - 渐变边框 */
+  .gradient-border {
+    position: relative;
+    border-radius: 0.5rem;
+    background: white;
+    padding: 3px;
+  }
+
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 0.5rem;
+    padding: 2px;
+    background: linear-gradient(45deg, #0066cc, #00a3e0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  /* 新增 - 玻璃态效果 */
+  .glassmorphism {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+}
+
+/* 移动设备特定样式 */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    h1,
+    h2,
+    h3 {
+      text-align: left;
+    }
+  }
+
+  /* 增加触摸目标大小 */
+  button,
+  a {
+    min-height: 2.5rem;
+    min-width: 2.5rem;
+  }
+
+  /* 优化表单元素 */
+  input,
+  select,
+  textarea {
+    font-size: 1rem;
+  }
+
+  /* 增加底部间距，避免被底部导航栏遮挡 */
+  main {
+    padding-bottom: 5rem;
+  }
+
+  /* 优化滚动体验 */
+  .overflow-y-auto {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 优化触摸反馈 */
+  .touch-feedback:active {
+    background-color: #e6f0fa;
+    transform: scale(0.95);
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+
+  /* 新增 - 移动端优化的表单控件 */
+  .mobile-input {
+    @apply h-12 text-base px-4;
+  }
+
+  .mobile-select {
+    @apply h-12 text-base px-4;
+  }
+
+  /* 新增 - 移动端底部安全区域 */
+  .safe-bottom {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* 添加移动设备动画 */
+@keyframes pulse-medical {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-medical {
+  animation: pulse-medical 2s ease-in-out infinite;
+}
+
+/* 添加浮动动画 */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* 新增 - 波纹动画 */
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* 新增 - 闪光效果 */
+@keyframes shine {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.shine-effect {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background-size: 200% 100%;
+  animation: shine 2s infinite;
+}
+
+/* 品牌渐变背景 - 使用标准CSS */
+.bg-medical-gradient {
+  background-image: linear-gradient(to right, #0066cc, #00a3e0);
+}
+
+.bg-health-gradient {
+  background-image: linear-gradient(to right, #00cc99, #00a3e0);
+}
+
+.bg-innovation-gradient {
+  background-image: linear-gradient(to right, #9966ff, #ff6b6b);
+}
+
+/* 可能存在的其他渐变文本类 */
+.vertical-gradient-text {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #0066cc, #00a3e0);
+  font-weight: 700;
+}
+
+.clinical-gradient-text {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #00cc99, #0066cc);
+  font-weight: 700;
+}
+
+.technical-gradient-text {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #9966ff, #ff6b6b);
+  font-weight: 700;
+}
+
+/* 布局优化 */
+.main-content {
+  width: 100%;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+/* 响应式布局调整 */
+@media (min-width: 768px) {
+  .sidebar-expanded .main-content {
+    margin-left: 16rem; /* 256px */
+    width: calc(100% - 16rem);
+  }
+
+  .sidebar-collapsed .main-content {
+    margin-left: 4rem; /* 64px */
+    width: calc(100% - 4rem);
+  }
+}
+
+/* 新增 - 滚动条美化 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* 新增 - 页面过渡动画 */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 300ms, transform 300ms;
+}
