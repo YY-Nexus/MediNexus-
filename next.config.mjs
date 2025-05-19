@@ -3,18 +3,18 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true
   },
   images: {
     domains: ['localhost', 'blob.v0.dev'],
-    unoptimized: true,
+    unoptimized: true
   },
   experimental: {
-    esmExternals: 'loose',
-  },
+    esmExternals: 'loose'
+  }
 };
 
 export default nextConfig;
