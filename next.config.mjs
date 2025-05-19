@@ -10,19 +10,10 @@ const nextConfig = {
   },
   images: {
     domains: ['localhost', 'blob.v0.dev'],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'blob.v0.dev',
-        port: '',
-        pathname: '/**',
-      },
-    ],
     unoptimized: true,
   },
   experimental: {
-    optimizeCss: true,
-    optimizePackageImports: ['lucide-react', 'recharts'],
+    esmExternals: 'loose',
   },
 };
 
