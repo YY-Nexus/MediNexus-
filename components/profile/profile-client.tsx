@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { User, Mail, Phone, Building, Award, Shield, Bell } from "lucide-react"
-import { AvatarUpload } from "./avatar-upload"
+import { SimplifiedAvatarUpload } from "./simplified-avatar-upload"
 import { DEFAULT_AVATAR, getAvatarByRole } from "@/types/avatar-presets"
 import { useToast } from "@/components/ui/use-toast"
 
@@ -94,7 +94,11 @@ export function ProfileClient() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex flex-col items-center sm:flex-row sm:items-start gap-6">
-              <AvatarUpload currentAvatar={formData.avatar} onAvatarChange={handleAvatarChange} size="large" />
+              <SimplifiedAvatarUpload
+                currentAvatar={formData.avatar}
+                onAvatarChange={handleAvatarChange}
+                size="large"
+              />
               <div className="flex-1 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">

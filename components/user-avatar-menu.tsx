@@ -1,5 +1,7 @@
 "use client"
 
+import { DropdownMenuShortcut } from "@/components/ui/dropdown-menu"
+
 import { useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -9,15 +11,15 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-import { User, Settings, HelpCircle, LogOut, Bell, Shield, Moon, Sun } from "lucide-react"
+import { User, Settings, HelpCircle, LogOut, Bell, Shield } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { useUserAvatar } from "@/contexts/user-avatar-context"
 import { DEFAULT_AVATAR } from "@/types/avatar-presets"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface UserAvatarMenuProps {
   user: {
@@ -27,15 +29,15 @@ interface UserAvatarMenuProps {
     avatar?: string
   }
   onLogout?: () => void
-  onThemeToggle?: () => void
   isDarkMode?: boolean
 }
 
-export function UserAvatarMenu({ user, onLogout, onThemeToggle, isDarkMode = false }: UserAvatarMenuProps) {
+export function UserAvatarMenu({ user, onLogout, isDarkMode = false }: UserAvatarMenuProps) {
   const router = useRouter()
   const { toast } = useToast()
   const [isOpen, setIsOpen] = useState(false)
   const { avatarUrl } = useUserAvatar()
+  const { t } = useTranslation()
 
   const handleLogout = () => {
     if (onLogout) {
@@ -43,8 +45,8 @@ export function UserAvatarMenu({ user, onLogout, onThemeToggle, isDarkMode = fal
     } else {
       // 默认登出行为
       toast({
-        title: "已登出",
-        description: "您已成功退出系统",
+        title: t("auth.loggedOut", "已登出"),
+        description: t("auth.logoutSuccess", "您已成功退出系统"),
       })
       router.push("/login")
     }
@@ -80,36 +82,32 @@ export function UserAvatarMenu({ user, onLogout, onThemeToggle, isDarkMode = fal
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={() => navigateTo("/profile")}>
             <User className="mr-2 h-4 w-4" />
-            <span>个人资料</span>
+            <span>{t("menu.profile", "个人资料")}</span>
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigateTo("/settings")}>
             <Settings className="mr-2 h-4 w-4" />
-            <span>系统设置</span>
+            <span>{t("menu.settings", "系统设置")}</span>
             <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigateTo("/security/account")}>
             <Shield className="mr-2 h-4 w-4" />
-            <span>账户安全</span>
+            <span>{t("menu.security", "账户安全")}</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigateTo("/notifications")}>
             <Bell className="mr-2 h-4 w-4" />
-            <span>通知中心</span>
+            <span>{t("menu.notifications", "通知中心")}</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onThemeToggle}>
-          {isDarkMode ? <Sun className="mr-2 h-4 w-4" /> : <Moon className="mr-2 h-4 w-4" />}
-          <span>{isDarkMode ? "浅色模式" : "深色模式"}</span>
-        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigateTo("/help")}>
           <HelpCircle className="mr-2 h-4 w-4" />
-          <span>帮助中心</span>
+          <span>{t("menu.help", "帮助中心")}</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
-          <span>退出登录</span>
+          <span>{t("menu.logout", "退出登录")}</span>
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
