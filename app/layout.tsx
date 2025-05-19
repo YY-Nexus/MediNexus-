@@ -1,28 +1,29 @@
 import type React from "react"
-import "./globals.css"
 import type { Metadata } from "next"
-import { ThemeProvider } from "@/components/theme-provider"
-import { AppShell } from "@/components/layout/app-shell"
-import RootLayoutClient from "./RootLayoutClient"
+import { Inter } from "next/font/google"
+import "./globals.css"
+import { Providers } from "./providers"
+import DashboardLayout from "./dashboard-layout"
+
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "言语「 医枢³」智能诊疗系统",
-  description: "YanYu MediNexus³ AI Diagnostic System (YY³-MNDS)",
+  title: "YanYu MediNexus³-Admin",
+  description: "医疗AI管理系统",
     generator: 'v0.dev'
 }
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode
-}) {
+}>) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
-      <body>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <AppShell>{children}</AppShell>
-          <RootLayoutClient />
-        </ThemeProvider>
+      <body className={inter.className}>
+        <Providers>
+          <DashboardLayout>{children}</DashboardLayout>
+        </Providers>
       </body>
     </html>
   )

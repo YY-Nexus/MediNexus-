@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-import * as jwt from "jsonwebtoken"
+import { verifyJwtToken } from "@/lib/auth/jwt"
 
 // 需要认证的路径
 const AUTH_PATHS = [
@@ -20,10 +20,7 @@ const AUTH_PATHS = [
 // 公开路径
 const PUBLIC_PATHS = ["/login", "/register", "/forgot-password", "/reset-password", "/unauthorized"]
 
-// JWT密钥 - 实际项目中应从环境变量获取
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"
-
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // 检查是否是需要认证的路径
@@ -56,7 +53,12 @@ export function middleware(request: NextRequest) {
 
     try {
       // 验证令牌
-      jwt.verify(token, JWT_SECRET)
+      const payload = await verifyJwtToken(token)
+
+      if (!payload) {
+        throw new Error("Invalid token")
+      }
+
       return NextResponse.next()
     } catch (error) {
       // 令牌无效或已过期，重定向到登录页

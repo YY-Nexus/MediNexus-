@@ -2,26 +2,28 @@
 
 import { useState, useEffect } from "react"
 
-export function useIsMobile(breakpoint = 768) {
+export function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     // 初始检查
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < breakpoint)
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768)
     }
 
     // 首次运行
-    checkIsMobile()
+    checkIfMobile()
 
     // 监听窗口大小变化
-    window.addEventListener("resize", checkIsMobile)
+    window.addEventListener("resize", checkIfMobile)
 
-    // 清理函数
+    // 清理
     return () => {
-      window.removeEventListener("resize", checkIsMobile)
+      window.removeEventListener("resize", checkIfMobile)
     }
-  }, [breakpoint])
+  }, [])
 
   return isMobile
 }
+
+export const useMobile = useIsMobile

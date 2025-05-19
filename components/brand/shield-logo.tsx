@@ -1,91 +1,50 @@
-"use client"
-
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import Image from "next/image"
 import { cn } from "@/lib/utils"
 
 interface ShieldLogoProps {
-  size?: "xs" | "sm" | "md" | "lg" | "xl"
-  animated?: boolean
-  className?: string
+  size?: "sm" | "md" | "lg"
   showText?: boolean
+  className?: string
 }
 
-export function ShieldLogo({ size = "md", animated = true, className = "", showText = true }: ShieldLogoProps) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [isMounted, setIsMounted] = useState(false)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  // 根据尺寸确定宽高
-  const dimensions = {
-    xs: { width: 24, height: 24 },
-    sm: { width: 32, height: 32 },
-    md: { width: 48, height: 48 },
-    lg: { width: 64, height: 64 },
-    xl: { width: 96, height: 96 },
-  }
-
-  const { width, height } = dimensions[size]
-
-  // 如果不支持客户端动画，则返回静态版本
-  if (!isMounted || !animated) {
-    return (
-      <div className={cn("relative flex items-center", className)}>
-        <Image
-          src="/yanyu-cloud-logo.png"
-          alt="言语云³ Logo"
-          width={width}
-          height={height}
-          className="object-contain"
-        />
-        {showText && size !== "xs" && size !== "sm" && (
-          <span className="ml-2 font-bold text-medical-700 whitespace-nowrap">
-            言语云<sup>3</sup>
-          </span>
-        )}
-      </div>
-    )
+export function ShieldLogo({ size = "md", showText = true, className }: ShieldLogoProps) {
+  const sizeClasses = {
+    sm: "h-8 w-8",
+    md: "h-10 w-10",
+    lg: "h-12 w-12",
   }
 
   return (
-    <div
-      className={cn("relative flex items-center", className)}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <motion.div
-        initial={{ scale: 1, rotate: 0 }}
-        animate={{
-          scale: isHovered ? 1.05 : 1,
-          rotate: isHovered ? 2 : 0,
-        }}
-        transition={{ duration: 0.3 }}
-      >
-        <Image
-          src="/yanyu-cloud-logo.png"
-          alt="言语云³ Logo"
-          width={width}
-          height={height}
-          className="object-contain"
-        />
-      </motion.div>
-
-      {showText && size !== "xs" && size !== "sm" && (
-        <motion.span
-          className="ml-2 font-bold text-medical-700 whitespace-nowrap"
-          initial={{ opacity: 1 }}
-          animate={{
-            opacity: 1,
-            x: isHovered ? 2 : 0,
-          }}
-          transition={{ duration: 0.3 }}
+    <div className={cn("flex items-center gap-2", className)}>
+      <div className={cn("relative", sizeClasses[size])}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className={cn("h-full w-full text-medical-600")}
         >
-          言语云<sup>3</sup>
-        </motion.span>
+          <path
+            d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z"
+            fill="currentColor"
+            fillOpacity="0.2"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M9 12L11 14L15 10"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+      {showText && (
+        <div className="flex flex-col">
+          <span className="text-lg font-bold leading-tight text-medical-700">YanYu</span>
+          <span className="text-xs font-medium text-medical-600">MediNexus³</span>
+        </div>
       )}
     </div>
   )

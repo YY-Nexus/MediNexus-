@@ -109,9 +109,7 @@ export function createNamespacedStorage(namespace: string) {
     clear: (): void => {
       const allKeys = getAllKeys()
       const namespacedKeys = allKeys.filter((key) => key.startsWith(prefix))
-      namespacedKeys.forEach((namespacedKey) => {
-        removeItem(namespacedKey)
-      })
+      namespacedKeys.forEach((namespacedKey) => removeItem(namespacedKey))
     },
     hasKey: (key: string): boolean => hasKey(`${prefix}${key}`),
     getAllKeys: (): string[] => {

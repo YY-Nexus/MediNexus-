@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
-import * as jwt from "jsonwebtoken"
+import { SignJWT } from "jose"
+import { getJwtSecretKey } from "@/lib/auth/jwt"
 
 // 模拟用户数据库
 // 实际项目中应连接到真实数据库
@@ -30,10 +31,15 @@ const users = [
     department: "研发部",
     avatar: "/avatars/researcher.png",
   },
+  {
+    id: "4",
+    email: "china@0379.email",
+    password: "My151001", // 注意大小写
+    name: "系统管理员",
+    role: "admin",
+    avatar: "/avatars/admin.png",
+  },
 ]
-
-// JWT密钥 - 实际项目中应从环境变量获取
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"
 
 export async function POST(request: Request) {
   try {
@@ -63,16 +69,12 @@ export async function POST(request: Request) {
       avatar: user.avatar,
     }
 
-    // 生成JWT令牌
-    const token = jwt.sign(
-      {
-        ...userWithoutPassword,
-        // 添加令牌元数据
-        iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // 24小时过期
-      },
-      JWT_SECRET,
-    )
+    // 使用 jose 库生成 JWT 令牌
+    const token = await new SignJWT({ ...userWithoutPassword })
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime("24h")
+      .sign(getJwtSecretKey())
 
     // 返回用户信息和令牌
     return NextResponse.json({

@@ -59,6 +59,4 @@ export interface DiagnosticFinding {
     width?: number
     height?: number
   }
-  relatedDiseaseIds?: string[]
-  relatedTreatmentIds?: string[]
 }

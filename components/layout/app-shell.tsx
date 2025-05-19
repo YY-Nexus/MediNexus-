@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
-import { SidebarNav } from "@/components/layout/sidebar-nav"
+import { Sidebar } from "@/components/sidebar"
 import { AppHeader } from "@/components/layout/app-header"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
@@ -57,7 +57,7 @@ export function AppShell({ children }: AppShellProps) {
     <>
       <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
         {/* 侧边栏 */}
-        <SidebarNav
+        <Sidebar
           isCollapsed={isSidebarCollapsed}
           setIsCollapsed={setIsSidebarCollapsed}
           className={cn(

@@ -12,7 +12,8 @@ interface OcrServiceProps {
   onCancel: () => void
 }
 
-export function OCRService({ imageUrl, onComplete, onCancel }: OcrServiceProps) {
+// 原始组件保持不变
+export function OcrService({ imageUrl, onComplete, onCancel }: OcrServiceProps) {
   const [isProcessing, setIsProcessing] = useState(false)
 
   const handleStartOcr = () => {
@@ -76,5 +77,5 @@ export function OCRService({ imageUrl, onComplete, onCancel }: OcrServiceProps) 
   )
 }
 
-// 为了向后兼容，保留原来的OcrService名称
-export { OCRService as OcrService }
+// 添加别名导出，以匹配所需的 OCRService 命名
+export const OCRService = OcrService

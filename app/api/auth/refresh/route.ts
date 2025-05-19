@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server"
-import * as jwt from "jsonwebtoken"
-
-// JWT密钥 - 实际项目中应从环境变量获取
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"
+import { SignJWT } from "jose"
+import { getJwtSecretKey, verifyJwtToken } from "@/lib/auth/jwt"
 
 export async function POST(request: Request) {
   try {
@@ -14,38 +12,34 @@ export async function POST(request: Request) {
 
     const token = authHeader.substring(7)
 
-    try {
-      // 验证令牌
-      const decoded = jwt.verify(token, JWT_SECRET) as any
+    // 验证令牌
+    const payload = await verifyJwtToken(token)
 
-      // 创建新令牌（不包含密码）
-      const userWithoutPassword = {
-        id: decoded.id,
-        email: decoded.email,
-        name: decoded.name,
-        role: decoded.role,
-        department: decoded.department,
-        avatar: decoded.avatar,
-      }
-
-      // 生成新的JWT令牌
-      const newToken = jwt.sign(
-        {
-          ...userWithoutPassword,
-          // 添加令牌元数据
-          iat: Math.floor(Date.now() / 1000),
-          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // 24小时过期
-        },
-        JWT_SECRET,
-      )
-
-      // 返回新令牌
-      return NextResponse.json({
-        token: newToken,
-      })
-    } catch (error) {
+    if (!payload) {
       return NextResponse.json({ message: "无效或已过期的令牌" }, { status: 401 })
     }
+
+    // 创建新令牌（不包含密码）
+    const userWithoutPassword = {
+      id: payload.id,
+      email: payload.email,
+      name: payload.name,
+      role: payload.role,
+      department: payload.department,
+      avatar: payload.avatar,
+    }
+
+    // 生成新的JWT令牌
+    const newToken = await new SignJWT({ ...userWithoutPassword })
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime("24h")
+      .sign(getJwtSecretKey())
+
+    // 返回新令牌
+    return NextResponse.json({
+      token: newToken,
+    })
   } catch (error) {
     console.error("刷新令牌错误:", error)
     return NextResponse.json({ message: "刷新令牌时发生错误" }, { status: 500 })
