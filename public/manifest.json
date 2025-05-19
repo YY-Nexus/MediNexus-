@@ -1,0 +1,23 @@
+{
+  "name": "言语云³ 智能医疗系统",
+  "short_name": "言语云³",
+  "description": "智能医疗 · 云端守护",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#3b82f6",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "/yanyu-cloud-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "orientation": "portrait",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "categories": ["medical", "healthcare", "productivity"],
+  "screenshots": [],
+  "shortcuts": []
+}
