@@ -24,6 +24,7 @@ import {
 
 // 删除导入AnimatedLogo组件
 // import { AnimatedLogo } from "@/components/brand/animated-logo"
+import { ShieldLogo } from "@/components/brand/shield-logo"
 
 export function GlobalNavigation() {
   const pathname = usePathname()
@@ -128,7 +129,7 @@ export function GlobalNavigation() {
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <Link href="/" className="flex items-center">
-                {/* 删除AnimatedLogo组件 */}
+                <ShieldLogo size="md" showText={true} />
               </Link>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">

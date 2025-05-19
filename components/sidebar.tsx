@@ -73,6 +73,29 @@ export function Sidebar({ className, isCollapsed, setIsCollapsed, testId = "side
     }
   }
 
+  // 添加键盘导航支持
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // 当焦点在导航项上时，使用箭头键导航
+      if (e.target instanceof HTMLElement && e.target.getAttribute("role") === "menuitem") {
+        const currentItem = e.target
+
+        if (e.key === "ArrowDown") {
+          e.preventDefault()
+          const nextItem = currentItem.nextElementSibling as HTMLElement
+          if (nextItem) nextItem.focus()
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault()
+          const prevItem = currentItem.previousElementSibling as HTMLElement
+          if (prevItem) prevItem.focus()
+        }
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+    return () => document.removeEventListener("keydown", handleKeyDown)
+  }, [])
+
   return (
     <TooltipProvider delayDuration={300}>
       <div
@@ -98,10 +121,14 @@ export function Sidebar({ className, isCollapsed, setIsCollapsed, testId = "side
             )}
           </div>
         </div>
-        <nav className="flex-1 overflow-y-auto p-2">
-          <ul className="space-y-1">
+        <nav className="flex-1 overflow-y-auto p-2" aria-label="主导航">
+          <ul className="space-y-1" role="menu">
             {navItems.map((item) => (
-              <li key={item.title} data-testid={`nav-item-${item.title.toLowerCase().replace(/\s+/g, "-")}`}>
+              <li
+                key={item.title}
+                data-testid={`nav-item-${item.title.toLowerCase().replace(/\s+/g, "-")}`}
+                role="none"
+              >
                 {item.children ? (
                   <Collapsible open={!isCollapsed && isItemOpen(item.title)} className="w-full">
                     <div
@@ -113,6 +140,10 @@ export function Sidebar({ className, isCollapsed, setIsCollapsed, testId = "side
                           ? "bg-medical-gradient text-white shadow-medical"
                           : "text-medical-700 hover:text-medical-900",
                       )}
+                      role="menuitem"
+                      tabIndex={0}
+                      aria-expanded={isItemOpen(item.title)}
+                      aria-haspopup="true"
                     >
                       <div className="flex items-center gap-3">
                         {isCollapsed ? (

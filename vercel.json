@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "npm install --force && npm run build",
-  "installCommand": "npm install --force",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
   "framework": "nextjs",
   "outputDirectory": ".next",
   "env": {
@@ -14,9 +14,10 @@
       "src": "package.json",
       "use": "@vercel/node",
       "config": {
-        "nodeVersion": "18.x",
-        "npmVersion": "9.x"
+        "nodeVersion": "22.x",
+        "npmVersion": "10.x"
       }
     }
-  ]
+  ],
+  "nodeVersion": "22.x"
 }

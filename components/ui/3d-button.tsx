@@ -83,6 +83,20 @@ const Button3d = React.forwardRef<HTMLButtonElement, Button3dProps>(
     const Comp = asChild ? Slot : "button"
     const [isPressed, setIsPressed] = React.useState(false)
 
+    // 添加键盘支持
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault()
+        setIsPressed(true)
+      }
+    }
+
+    const handleKeyUp = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        setIsPressed(false)
+      }
+    }
+
     return (
       <Comp
         className={cn(button3dVariants({ variant, size, rounded, animation, className }))}
@@ -91,18 +105,22 @@ const Button3d = React.forwardRef<HTMLButtonElement, Button3dProps>(
         onMouseDown={() => setIsPressed(true)}
         onMouseUp={() => setIsPressed(false)}
         onMouseLeave={() => isPressed && setIsPressed(false)}
+        onKeyDown={handleKeyDown}
+        onKeyUp={handleKeyUp}
+        aria-busy={isLoading}
         {...props}
       >
         <span className={cn("flex items-center justify-center", isPressed ? "transform translate-y-[1px]" : "")}>
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {children}
+              <span>{children}</span>
+              <span className="sr-only">加载中</span>
             </>
           ) : (
             <>
               {icon && iconPosition === "left" && <span className="mr-2">{icon}</span>}
-              {children}
+              <span>{children}</span>
               {icon && iconPosition === "right" && <span className="ml-2">{icon}</span>}
             </>
           )}

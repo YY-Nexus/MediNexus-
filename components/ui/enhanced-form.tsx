@@ -13,6 +13,8 @@ interface EnhancedFormProps extends React.FormHTMLAttributes<HTMLFormElement> {
   onCancel?: () => void
   layout?: "vertical" | "horizontal"
   gap?: "sm" | "md" | "lg"
+  isValid?: boolean
+  validationMessage?: string
 }
 
 export function EnhancedForm({
@@ -25,6 +27,8 @@ export function EnhancedForm({
   onCancel,
   layout = "vertical",
   gap = "md",
+  isValid = true,
+  validationMessage = "",
   ...props
 }: EnhancedFormProps) {
   const isMobile = useIsMobile()
@@ -53,6 +57,12 @@ export function EnhancedForm({
         {children}
       </div>
 
+      {!isValid && validationMessage && (
+        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm">
+          {validationMessage}
+        </div>
+      )}
+
       <div
         className={cn(
           "flex mt-6",
@@ -75,6 +85,7 @@ export function EnhancedForm({
           isLoading={isLoading}
           className={cn(finalLayout === "vertical" && "w-full")}
           animation="scale"
+          disabled={!isValid && !!validationMessage}
         >
           {submitText}
         </Button3d>

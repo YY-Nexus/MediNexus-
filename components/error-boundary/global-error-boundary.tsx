@@ -44,7 +44,13 @@ export class GlobalErrorBoundary extends Component<Props, State> {
     errorService?.handleError?.(error, ErrorType.CLIENT, {
       componentStack: errorInfo.componentStack,
       path: typeof window !== "undefined" ? window.location.pathname : "",
+      timestamp: new Date().toISOString(),
+      userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "",
     })
+
+    // 在控制台输出更详细的错误信息
+    console.error("应用程序错误:", error)
+    console.error("组件堆栈:", errorInfo.componentStack)
   }
 
   handleReset = (): void => {
@@ -81,6 +87,9 @@ export class GlobalErrorBoundary extends Component<Props, State> {
               <MedicalButton variant="outline" onClick={this.handleReload} className="w-full">
                 <RefreshCw className="mr-2 h-4 w-4" />
                 刷新页面
+              </MedicalButton>
+              <MedicalButton variant="ghost" onClick={() => (window.location.href = "/")} className="w-full">
+                返回首页
               </MedicalButton>
             </div>
 

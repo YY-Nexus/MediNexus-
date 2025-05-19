@@ -17,10 +17,13 @@ import {
   MapPin,
   AlertCircle,
   Plus,
+  BrainCircuit,
 } from "lucide-react"
 import { MedicalButton } from "@/components/ui/medical-button"
 import { BarChart, LineChart } from "@/components/ui/chart"
 import { ResponsiveMedicalCard } from "@/components/ui/responsive-medical-card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
 // 患者基本数据类型
 type Patient = {
@@ -147,7 +150,7 @@ const visitHistory = [
   },
 ]
 
-// 模拟用药��录
+// 模拟用药录
 const medications = [
   {
     id: "M001",
@@ -310,6 +313,65 @@ export function PatientDetails({ patientId }: { patientId: string }) {
                 </MedicalButton>
               </div>
             </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center">
+            <BrainCircuit className="h-5 w-5 mr-2 text-blue-500" />
+            AI诊断历史
+          </CardTitle>
+          <CardDescription>患者的AI辅助诊断记录和建议</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* 这里可以是实际的AI诊断记录，这里使用模拟数据 */}
+            <div className="border rounded-md p-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h4 className="font-medium">肺部CT影像分析</h4>
+                  <p className="text-sm text-muted-foreground">2024-04-15</p>
+                </div>
+                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                  高可信度
+                </Badge>
+              </div>
+              <p className="mt-2 text-sm">
+                AI分析结果：未发现明显异常。肺部组织正常，无结节或肿块。支气管和血管结构清晰。
+              </p>
+              <div className="mt-2 flex justify-end">
+                <Button variant="outline" size="sm">
+                  查看详情
+                </Button>
+              </div>
+            </div>
+            <div className="border rounded-md p-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h4 className="font-medium">心电图分析</h4>
+                  <p className="text-sm text-muted-foreground">2024-03-22</p>
+                </div>
+                <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
+                  中等可信度
+                </Badge>
+              </div>
+              <p className="mt-2 text-sm">
+                AI分析结果：检测到轻微心律不齐。建议进一步临床评估，可能需要24小时动态心电图监测。
+              </p>
+              <div className="mt-2 flex justify-end">
+                <Button variant="outline" size="sm">
+                  查看详情
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 flex justify-end">
+            <Button variant="outline" size="sm" className="mr-2">
+              查看全部
+            </Button>
+            <Button size="sm">新增AI诊断</Button>
           </div>
         </CardContent>
       </Card>

@@ -31,10 +31,18 @@ export function AdvancedSearch({ onSearch, placeholder = "搜索...", className 
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false)
   const [filters, setFilters] = useState<{ [key: string]: any }>({})
   const [activeFilters, setActiveFilters] = useState<string[]>([])
+  // 在组件顶部添加搜索历史状态
+  const [searchHistory, setSearchHistory] = useState<string[]>([])
 
   // 处理搜索提交
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    // 如果关键词不为空且不在历史记录中，添加到历史记录
+    if (keyword.trim() && !searchHistory.includes(keyword.trim())) {
+      setSearchHistory((prev) => [keyword.trim(), ...prev].slice(0, 5))
+    }
+
     onSearch({ keyword, filters })
   }
 
@@ -233,8 +241,68 @@ export function AdvancedSearch({ onSearch, placeholder = "搜索...", className 
               <Search className="h-4 w-4" />
             </Button>
           </div>
+          {/* 搜索历史下拉菜单 */}
+          {keyword.trim() === "" && searchHistory.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-md shadow-lg z-10">
+              <div className="p-2 text-xs font-medium text-muted-foreground">搜索历史</div>
+              <ul className="max-h-40 overflow-y-auto">
+                {searchHistory.map((item, index) => (
+                  <li key={index}>
+                    <button
+                      type="button"
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-muted flex items-center"
+                      onClick={() => setKeyword(item)}
+                    >
+                      <Search className="h-3 w-3 mr-2 text-muted-foreground" />
+                      {item}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </form>
+      {/* 在组件中添加快捷筛选按钮 */}
+      <div className="flex flex-wrap gap-2 mt-3">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="h-7 text-xs"
+          onClick={() => {
+            updateFilter("status", "urgent")
+            onSearch({ keyword, filters: { ...filters, status: "urgent" } })
+          }}
+        >
+          紧急患者
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="h-7 text-xs"
+          onClick={() => {
+            updateFilter("riskHigh", true)
+            onSearch({ keyword, filters: { ...filters, riskHigh: true } })
+          }}
+        >
+          高风险患者
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="h-7 text-xs"
+          onClick={() => {
+            const today = new Date()
+            updateFilter("visitFrom", today)
+            onSearch({ keyword, filters: { ...filters, visitFrom: today } })
+          }}
+        >
+          今日就诊
+        </Button>
+      </div>
 
       {/* 显示活动的筛选条件 */}
       {activeFilters.length > 0 && (

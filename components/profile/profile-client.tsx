@@ -10,37 +10,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { User, Mail, Phone, Building, Award, Shield, Bell } from "lucide-react"
 import { AvatarUpload } from "./avatar-upload"
-
-// 临时用户头像组件
-function UserAvatar({
-  user,
-  className = "",
-  size = "large",
-}: { user: any; className?: string; size?: "small" | "medium" | "large" }) {
-  const sizeClasses = {
-    small: "h-10 w-10",
-    medium: "h-16 w-16",
-    large: "h-24 w-24",
-  }
-
-  return (
-    <div
-      className={`rounded-full bg-medical-100 flex items-center justify-center text-medical-600 ${sizeClasses[size]} ${className}`}
-    >
-      {user.avatar ? (
-        <img
-          src={user.avatar || "/placeholder.svg"}
-          alt={user.name}
-          className="rounded-full h-full w-full object-cover"
-        />
-      ) : (
-        <User className={size === "large" ? "h-12 w-12" : size === "medium" ? "h-8 w-8" : "h-5 w-5"} />
-      )}
-    </div>
-  )
-}
+import { DEFAULT_AVATAR, getAvatarByRole } from "@/types/avatar-presets"
+import { useToast } from "@/components/ui/use-toast"
 
 export function ProfileClient() {
+  const { toast } = useToast()
+
   // 模拟用户数据
   const [user, setUser] = useState({
     name: "张医生",
@@ -51,7 +26,7 @@ export function ProfileClient() {
     title: "主治医师",
     hospital: "协和医院",
     bio: "从事内科临床工作10年，专注于心血管疾病的诊断与治疗。",
-    avatar: "/doctor-avatar.png",
+    avatar: getAvatarByRole("医生"), // 使用基于角色的默认头像
     specialties: ["心血管疾病", "高血压", "冠心病"],
     certifications: [
       { name: "医师资格证", status: "已验证", expiry: "2030-12-31" },
@@ -72,7 +47,7 @@ export function ProfileClient() {
     if (preview) {
       setFormData((prev) => ({ ...prev, avatar: preview }))
     } else {
-      setFormData((prev) => ({ ...prev, avatar: user.avatar }))
+      setFormData((prev) => ({ ...prev, avatar: DEFAULT_AVATAR }))
     }
   }
 
@@ -90,6 +65,11 @@ export function ProfileClient() {
     setUser(formData)
     setIsEditing(false)
     setAvatarFile(null)
+
+    toast({
+      title: "保存成功",
+      description: "您的个人资料已更新",
+    })
   }
 
   const handleCancel = () => {
@@ -114,7 +94,7 @@ export function ProfileClient() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex flex-col items-center sm:flex-row sm:items-start gap-6">
-              <AvatarUpload currentAvatar={user.avatar} onAvatarChange={handleAvatarChange} size="large" />
+              <AvatarUpload currentAvatar={formData.avatar} onAvatarChange={handleAvatarChange} size="large" />
               <div className="flex-1 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -219,7 +199,9 @@ export function ProfileClient() {
         </Card>
       </TabsContent>
 
+      {/* 其他标签页内容保持不变 */}
       <TabsContent value="professional">
+        {/* 专业资质内容 */}
         <Card>
           <CardHeader>
             <CardTitle>专业资质</CardTitle>
@@ -276,6 +258,7 @@ export function ProfileClient() {
       </TabsContent>
 
       <TabsContent value="security">
+        {/* 账号安全内容 */}
         <Card>
           <CardHeader>
             <CardTitle>账号安全</CardTitle>
@@ -320,6 +303,7 @@ export function ProfileClient() {
       </TabsContent>
 
       <TabsContent value="notifications">
+        {/* 通知设置内容 */}
         <Card>
           <CardHeader>
             <CardTitle>通知设置</CardTitle>

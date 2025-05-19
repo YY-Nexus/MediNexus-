@@ -1,7 +1,9 @@
 "use client"
 
 import { useTranslation } from "@/hooks/use-translation"
-import { PatientCard } from "@/components/patient-card"
+// 更新导入路径，确保使用kebab-case命名的组件
+import PatientList from "@/components/patients/patient-list"
+// 如果之前导入的是 PatientList.tsx，请替换为上面的导入
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Plus } from "lucide-react"
@@ -78,7 +80,7 @@ export default function PatientsPage() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredPatients.map((patient) => (
-          <PatientCard
+          <PatientList
             key={patient.id}
             {...patient}
             onView={handleViewPatient}

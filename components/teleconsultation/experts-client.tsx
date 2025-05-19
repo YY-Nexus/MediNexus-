@@ -213,8 +213,8 @@ const hospitals = [
 export default function ExpertsClient() {
   const [activeTab, setActiveTab] = useState("experts")
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedDepartment, setSelectedDepartment] = useState("")
-  const [selectedCity, setSelectedCity] = useState("")
+  const [selectedDepartment, setSelectedDepartment] = useState("all")
+  const [selectedCity, setSelectedCity] = useState("all")
   const [showInviteDialog, setShowInviteDialog] = useState(false)
   const [selectedExpert, setSelectedExpert] = useState(null)
 
@@ -231,11 +231,11 @@ export default function ExpertsClient() {
       return false
     }
     // 科室过滤
-    if (selectedDepartment && expert.department !== selectedDepartment) {
+    if (selectedDepartment && selectedDepartment !== "all" && expert.department !== selectedDepartment) {
       return false
     }
     // 城市过滤
-    if (selectedCity && expert.city !== selectedCity) {
+    if (selectedCity && selectedCity !== "all" && expert.city !== selectedCity) {
       return false
     }
     return true
@@ -381,7 +381,7 @@ export default function ExpertsClient() {
                         <SelectValue placeholder="所有城市" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">所有城市</SelectItem>
+                        <SelectItem value="all">所有城市</SelectItem>
                         <SelectItem value="北京">北京</SelectItem>
                         <SelectItem value="上海">上海</SelectItem>
                         <SelectItem value="广州">广州</SelectItem>
@@ -399,8 +399,8 @@ export default function ExpertsClient() {
                       className="w-full"
                       onClick={() => {
                         setSearchQuery("")
-                        setSelectedDepartment("")
-                        setSelectedCity("")
+                        setSelectedDepartment("all")
+                        setSelectedCity("all")
                       }}
                     >
                       <Filter className="w-4 h-4 mr-2" />
@@ -489,8 +489,8 @@ export default function ExpertsClient() {
                     variant="outline"
                     onClick={() => {
                       setSearchQuery("")
-                      setSelectedDepartment("")
-                      setSelectedCity("")
+                      setSelectedDepartment("all")
+                      setSelectedCity("all")
                     }}
                   >
                     查看所有专家
