@@ -5,7 +5,6 @@ import { useState, useEffect } from "react"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useLoading } from "@/contexts/loading-context"
 import { useOfflineStatus } from "@/hooks/use-offline-status"
-import { OfflineNotification } from "@/components/offline-notification"
 import { NetworkErrorHandler } from "@/components/error-boundary/network-error-handler"
 import { SimplePerformanceMonitor } from "@/components/performance/simple-performance-monitor"
 
@@ -66,8 +65,7 @@ export default function RootLayoutClient({ children }: { children: React.ReactNo
   return (
     <NetworkErrorHandler>
       <div className="flex flex-col min-h-screen">
-        <OfflineNotification />
-        <main className="flex-1">{children}</main>
+        {children}
         {process.env.NEXT_PUBLIC_SHOW_PERFORMANCE_MONITOR === "true" && showPerformanceMonitor && (
           <SimplePerformanceMonitor />
         )}

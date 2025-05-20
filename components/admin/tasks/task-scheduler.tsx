@@ -1,396 +1,461 @@
 "use client"
 
 import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import {
+  Clock,
+  Database,
+  FileText,
+  Filter,
+  Plus,
+  RefreshCw,
+  Search,
+  Settings,
+  Trash2,
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
+  Edit,
+  Play,
+  Pause,
+} from "lucide-react"
 
 export function TaskScheduler() {
-  const [date, setDate] = useState<Date>()
-  const [activeTab, setActiveTab] = useState("simple")
+  const [activeTab, setActiveTab] = useState("all")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [showAddDialog, setShowAddDialog] = useState(false)
+  const [showEditDialog, setShowEditDialog] = useState(false)
+  const [selectedTask, setSelectedTask] = useState<any>(null)
+
+  // 模拟计划任务数据
+  const scheduledTasks = [
+    {
+      id: "TASK-001",
+      name: "数据库备份",
+      type: "system",
+      schedule: "每日 03:00",
+      cronExpression: "0 0 3 * * ?",
+      lastRun: "2023-05-20 03:00:00",
+      nextRun: "2023-05-21 03:00:00",
+      status: "active",
+      description: "自动备份所有数据库到云存储",
+    },
+    {
+      id: "TASK-002",
+      name: "系统日志清理",
+      type: "system",
+      schedule: "每周日 01:00",
+      cronExpression: "0 0 1 ? * SUN",
+      lastRun: "2023-05-14 01:00:00",
+      nextRun: "2023-05-21 01:00:00",
+      status: "active",
+      description: "清理超过30天的系统日志",
+    },
+    {
+      id: "TASK-003",
+      name: "用户数据同步",
+      type: "data",
+      schedule: "每4小时",
+      cronExpression: "0 0 */4 * * ?",
+      lastRun: "2023-05-20 08:00:00",
+      nextRun: "2023-05-20 12:00:00",
+      status: "active",
+      description: "同步用户数据到备份服务器",
+    },
+    {
+      id: "TASK-004",
+      name: "性能报告生成",
+      type: "report",
+      schedule: "每日 23:00",
+      cronExpression: "0 0 23 * * ?",
+      lastRun: "2023-05-19 23:00:00",
+      nextRun: "2023-05-20 23:00:00",
+      status: "inactive",
+      description: "生成系统性能日报表",
+    },
+    {
+      id: "TASK-005",
+      name: "安全漏洞扫描",
+      type: "security",
+      schedule: "每周一 10:00",
+      cronExpression: "0 0 10 ? * MON",
+      lastRun: "2023-05-15 10:00:00",
+      nextRun: "2023-05-22 10:00:00",
+      status: "active",
+      description: "扫描系统安全漏洞并生成报告",
+    },
+    {
+      id: "TASK-006",
+      name: "临时文件清理",
+      type: "system",
+      schedule: "每日 02:00",
+      cronExpression: "0 0 2 * * ?",
+      lastRun: "2023-05-20 02:00:00",
+      nextRun: "2023-05-21 02:00:00",
+      status: "error",
+      description: "清理系统临时文件",
+    },
+    {
+      id: "TASK-007",
+      name: "月度统计报告",
+      type: "report",
+      schedule: "每月1日 00:05",
+      cronExpression: "0 5 0 1 * ?",
+      lastRun: "2023-05-01 00:05:00",
+      nextRun: "2023-06-01 00:05:00",
+      status: "active",
+      description: "生成上月系统使用统计报告",
+    },
+  ]
+
+  // 过滤任务
+  const filteredTasks = scheduledTasks.filter((task) => {
+    const matchesSearch =
+      task.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.description.toLowerCase().includes(searchQuery.toLowerCase())
+
+    const matchesTab =
+      activeTab === "all" ||
+      (activeTab === "active" && task.status === "active") ||
+      (activeTab === "inactive" && task.status === "inactive") ||
+      (activeTab === "error" && task.status === "error")
+
+    return matchesSearch && matchesTab
+  })
+
+  // 获取状态徽章
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "active":
+        return (
+          <Badge className="bg-green-500 flex items-center gap-1">
+            <CheckCircle2 className="h-3 w-3" /> 活跃
+          </Badge>
+        )
+      case "inactive":
+        return (
+          <Badge className="bg-gray-500 flex items-center gap-1">
+            <Pause className="h-3 w-3" /> 已停用
+          </Badge>
+        )
+      case "error":
+        return (
+          <Badge className="bg-red-500 flex items-center gap-1">
+            <XCircle className="h-3 w-3" /> 错误
+          </Badge>
+        )
+      default:
+        return <Badge>未知</Badge>
+    }
+  }
+
+  // 获取任务类型图标
+  const getTaskTypeIcon = (type: string) => {
+    switch (type) {
+      case "system":
+        return <Settings className="h-4 w-4 text-blue-500" />
+      case "data":
+        return <Database className="h-4 w-4 text-green-500" />
+      case "report":
+        return <FileText className="h-4 w-4 text-purple-500" />
+      case "security":
+        return <AlertTriangle className="h-4 w-4 text-orange-500" />
+      default:
+        return <Clock className="h-4 w-4 text-gray-500" />
+    }
+  }
+
+  // 编辑任务
+  const handleEditTask = (task: any) => {
+    setSelectedTask(task)
+    setShowEditDialog(true)
+  }
 
   return (
     <div className="space-y-6">
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex flex-col md:flex-row gap-4 flex-1">
+          <div className="relative flex-1">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+            <Input
+              placeholder="搜索任务ID、名称或描述..."
+              className="pl-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          <Button variant="outline" size="icon" className="hidden md:flex">
+            <Filter className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" className="hidden md:flex">
+            <RefreshCw className="mr-2 h-4 w-4" />
+            刷新
+          </Button>
+          <Button size="sm" onClick={() => setShowAddDialog(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            新建任务
+          </Button>
+        </div>
+      </div>
+
+      <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          <TabsTrigger value="simple">简单调度</TabsTrigger>
-          <TabsTrigger value="advanced">高级调度</TabsTrigger>
-          <TabsTrigger value="dependencies">任务依赖</TabsTrigger>
+          <TabsTrigger value="all">全部任务</TabsTrigger>
+          <TabsTrigger value="active">活跃任务</TabsTrigger>
+          <TabsTrigger value="inactive">已停用</TabsTrigger>
+          <TabsTrigger value="error">错误任务</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="simple" className="space-y-4 pt-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="task-name">任务名称</Label>
-                <Input id="task-name" placeholder="输入任务名称" />
+        <TabsContent value="all" className="mt-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle>计划任务列表</CardTitle>
+                <Button variant="ghost" size="sm">
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  刷新
+                </Button>
               </div>
+              <CardDescription>共 {filteredTasks.length} 个计划任务</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>任务ID</TableHead>
+                      <TableHead>任务名称</TableHead>
+                      <TableHead>类型</TableHead>
+                      <TableHead>执行计划</TableHead>
+                      <TableHead>上次执行</TableHead>
+                      <TableHead>下次执行</TableHead>
+                      <TableHead>状态</TableHead>
+                      <TableHead className="text-right">操作</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredTasks.length > 0 ? (
+                      filteredTasks.map((task) => (
+                        <TableRow key={task.id}>
+                          <TableCell className="font-medium">{task.id}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              {getTaskTypeIcon(task.type)}
+                              <span>{task.name}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {task.type === "system" && "系统"}
+                            {task.type === "data" && "数据"}
+                            {task.type === "report" && "报告"}
+                            {task.type === "security" && "安全"}
+                          </TableCell>
+                          <TableCell>{task.schedule}</TableCell>
+                          <TableCell>{task.lastRun}</TableCell>
+                          <TableCell>{task.nextRun}</TableCell>
+                          <TableCell>{getStatusBadge(task.status)}</TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-2">
+                              <Button variant="ghost" size="icon" onClick={() => handleEditTask(task)}>
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="icon">
+                                <Play className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="icon">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={8} className="h-24 text-center">
+                          没有找到匹配的计划任务
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-              <div className="space-y-2">
-                <Label htmlFor="task-type">任务类型</Label>
-                <Select>
-                  <SelectTrigger id="task-type">
-                    <SelectValue placeholder="选择任务类型" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="system">系统任务</SelectItem>
-                    <SelectItem value="analytics">分析任务</SelectItem>
-                    <SelectItem value="ai">AI任务</SelectItem>
-                    <SelectItem value="custom">自定义任务</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+        {/* 其他标签页内容与 all 标签页类似 */}
+      </Tabs>
 
-              <div className="space-y-2">
-                <Label htmlFor="task-command">执行命令/脚本</Label>
-                <Input id="task-command" placeholder="输入执行命令或脚本路径" />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="task-description">任务描述</Label>
-                <Input id="task-description" placeholder="输入任务描述" />
-              </div>
+      {/* 添加任务对话框 */}
+      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>创建新计划任务</DialogTitle>
+            <DialogDescription>设置新的计划任务详细信息</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="task-name" className="text-right">
+                任务名称
+              </Label>
+              <Input id="task-name" placeholder="输入任务名称" className="col-span-3" />
             </div>
-
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>执行频率</Label>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="task-type" className="text-right">
+                任务类型
+              </Label>
+              <Select>
+                <SelectTrigger id="task-type" className="col-span-3">
+                  <SelectValue placeholder="选择任务类型" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="system">系统任务</SelectItem>
+                  <SelectItem value="data">数据任务</SelectItem>
+                  <SelectItem value="report">报告任务</SelectItem>
+                  <SelectItem value="security">安全任务</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="task-schedule" className="text-right">
+                执行计划
+              </Label>
+              <div className="col-span-3 flex gap-2">
                 <Select>
                   <SelectTrigger>
-                    <SelectValue placeholder="选择执行频率" />
+                    <SelectValue placeholder="频率" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="once">一次性</SelectItem>
-                    <SelectItem value="hourly">每小时</SelectItem>
-                    <SelectItem value="daily">每天</SelectItem>
+                    <SelectItem value="daily">每日</SelectItem>
                     <SelectItem value="weekly">每周</SelectItem>
                     <SelectItem value="monthly">每月</SelectItem>
                     <SelectItem value="custom">自定义</SelectItem>
                   </SelectContent>
                 </Select>
+                <Input type="time" placeholder="时间" />
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>开始日期</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground")}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {date ? format(date, "yyyy-MM-dd") : "选择日期"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>开始时间</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="选择时间" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 24 }).map((_, hour) => (
-                        <SelectItem key={hour} value={`${hour}:00`}>
-                          {`${hour.toString().padStart(2, "0")}:00`}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>重复选项</Label>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="repeat-mon" />
-                    <label
-                      htmlFor="repeat-mon"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      周一
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="repeat-tue" />
-                    <label
-                      htmlFor="repeat-tue"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      周二
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="repeat-wed" />
-                    <label
-                      htmlFor="repeat-wed"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      周三
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="repeat-thu" />
-                    <label
-                      htmlFor="repeat-thu"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      周四
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="repeat-fri" />
-                    <label
-                      htmlFor="repeat-fri"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      周五
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="repeat-sat" />
-                    <label
-                      htmlFor="repeat-sat"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      周六
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="repeat-sun" />
-                    <label
-                      htmlFor="repeat-sun"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      周日
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>高级选项</Label>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="option-timeout" />
-                    <label
-                      htmlFor="option-timeout"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      设置超时时间
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="option-retry" />
-                    <label
-                      htmlFor="option-retry"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      失败自动重试
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="option-notify" />
-                    <label
-                      htmlFor="option-notify"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      执行结果通知
-                    </label>
-                  </div>
-                </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="cron-expression" className="text-right">
+                Cron 表达式
+              </Label>
+              <Input id="cron-expression" placeholder="0 0 12 * * ?" className="col-span-3" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="task-description" className="text-right">
+                任务描述
+              </Label>
+              <Textarea id="task-description" placeholder="描述任务的目的和功能" className="col-span-3" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="task-status" className="text-right">
+                任务状态
+              </Label>
+              <div className="flex items-center space-x-2 col-span-3">
+                <Switch id="task-status" defaultChecked />
+                <Label htmlFor="task-status" className="font-normal">
+                  启用任务
+                </Label>
               </div>
             </div>
           </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAddDialog(false)}>
+              取消
+            </Button>
+            <Button onClick={() => setShowAddDialog(false)}>创建任务</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button variant="outline">取消</Button>
-            <Button>保存任务</Button>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="advanced" className="space-y-4 pt-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="adv-task-name">任务名称</Label>
-                <Input id="adv-task-name" placeholder="输入任务名称" />
+      {/* 编辑任务对话框 */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>编辑计划任务</DialogTitle>
+            <DialogDescription>修改计划任务详细信息</DialogDescription>
+          </DialogHeader>
+          {selectedTask && (
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-task-name" className="text-right">
+                  任务名称
+                </Label>
+                <Input id="edit-task-name" defaultValue={selectedTask.name} className="col-span-3" />
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="adv-task-type">任务类型</Label>
-                <Select>
-                  <SelectTrigger id="adv-task-type">
-                    <SelectValue placeholder="选择任务类型" />
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-task-type" className="text-right">
+                  任务类型
+                </Label>
+                <Select defaultValue={selectedTask.type}>
+                  <SelectTrigger id="edit-task-type" className="col-span-3">
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="system">系统任务</SelectItem>
-                    <SelectItem value="analytics">分析任务</SelectItem>
-                    <SelectItem value="ai">AI任务</SelectItem>
-                    <SelectItem value="custom">自定义任务</SelectItem>
+                    <SelectItem value="data">数据任务</SelectItem>
+                    <SelectItem value="report">报告任务</SelectItem>
+                    <SelectItem value="security">安全任务</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="adv-cron">Cron 表达式</Label>
-                <Input id="adv-cron" placeholder="*/5 * * * *" />
-                <p className="text-xs text-muted-foreground">使用标准 cron 表达式设置执行计划</p>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-cron-expression" className="text-right">
+                  Cron 表达式
+                </Label>
+                <Input id="edit-cron-expression" defaultValue={selectedTask.cronExpression} className="col-span-3" />
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="adv-timeout">超时时间 (秒)</Label>
-                <Input id="adv-timeout" type="number" placeholder="300" />
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-task-description" className="text-right">
+                  任务描述
+                </Label>
+                <Textarea id="edit-task-description" defaultValue={selectedTask.description} className="col-span-3" />
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="adv-retry">重试次数</Label>
-                <Input id="adv-retry" type="number" placeholder="3" />
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="adv-command">执行命令/脚本</Label>
-                <Input id="adv-command" placeholder="输入执行命令或脚本路径" />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="adv-params">参数</Label>
-                <Input id="adv-params" placeholder="--verbose --output=/tmp/result.json" />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="adv-env">环境变量</Label>
-                <Input id="adv-env" placeholder="KEY1=value1,KEY2=value2" />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="adv-working-dir">工作目录</Label>
-                <Input id="adv-working-dir" placeholder="/app/scripts" />
-              </div>
-
-              <div className="space-y-2">
-                <Label>通知设置</Label>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="notify-success" />
-                    <label
-                      htmlFor="notify-success"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      成功时通知
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="notify-failure" defaultChecked />
-                    <label
-                      htmlFor="notify-failure"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      失败时通知
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="notify-timeout" />
-                    <label
-                      htmlFor="notify-timeout"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      超时时通知
-                    </label>
-                  </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-task-status" className="text-right">
+                  任务状态
+                </Label>
+                <div className="flex items-center space-x-2 col-span-3">
+                  <Switch id="edit-task-status" defaultChecked={selectedTask.status === "active"} />
+                  <Label htmlFor="edit-task-status" className="font-normal">
+                    启用任务
+                  </Label>
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button variant="outline">取消</Button>
-            <Button>保存任务</Button>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="dependencies" className="space-y-4 pt-4">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>前置任务</Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="选择前置任务" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="task1">数据备份任务</SelectItem>
-                  <SelectItem value="task2">日志清理任务</SelectItem>
-                  <SelectItem value="task3">数据分析任务</SelectItem>
-                  <SelectItem value="task4">报告生成任务</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" className="mt-2 w-full">
-                添加前置任务
-              </Button>
-            </div>
-
-            <div className="space-y-2">
-              <Label>依赖条件</Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="选择依赖条件" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="success">成功后执行</SelectItem>
-                  <SelectItem value="failure">失败后执行</SelectItem>
-                  <SelectItem value="always">无论结果都执行</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>后续任务</Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="选择后续任务" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="task5">数据导出任务</SelectItem>
-                  <SelectItem value="task6">邮件通知任务</SelectItem>
-                  <SelectItem value="task7">系统优化任务</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" className="mt-2 w-full">
-                添加后续任务
-              </Button>
-            </div>
-
-            <div className="space-y-2">
-              <Label>任务流程图</Label>
-              <div className="h-64 border rounded-md p-4 bg-muted/20 flex items-center justify-center">
-                <p className="text-muted-foreground">任务依赖流程图将在此处显示</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button variant="outline">取消</Button>
-            <Button>保存依赖关系</Button>
-          </div>
-        </TabsContent>
-      </Tabs>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditDialog(false)}>
+              取消
+            </Button>
+            <Button onClick={() => setShowEditDialog(false)}>保存更改</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
+
+export default TaskScheduler

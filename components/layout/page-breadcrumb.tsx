@@ -1,87 +1,103 @@
 "use client"
 
-import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
+import Link from "next/link"
 import { ChevronRight, Home } from "lucide-react"
 
-interface Breadcrumb {
-  label: string
-  href: string
-  isCurrent?: boolean
-}
-
-interface PageBreadcrumbProps {
-  items?: Breadcrumb[]
-  className?: string
-}
-
-export function PageBreadcrumb({ items, className }: PageBreadcrumbProps) {
+export function PageBreadcrumb() {
   const pathname = usePathname()
+  const segments = pathname.split("/").filter(Boolean)
 
-  // 如果未提供项目，则根据路径自动生成
-  const breadcrumbs: Breadcrumb[] = items || generateBreadcrumbs(pathname)
+  // 路径映射表
+  const pathMap: Record<string, string> = {
+    "ai-diagnosis": "智能诊断",
+    "ai-model": "AI模型",
+    records: "诊断记录",
+    training: "模型训练",
+    performance: "性能分析",
+    deployment: "模型部署",
+    patients: "患者管理",
+    followup: "随访计划",
+    groups: "患者分组",
+    "clinical-decision": "临床决策",
+    treatments: "治疗方案",
+    guidelines: "临床指南",
+    "drug-reference": "药物参考",
+    medications: "药物管理",
+    prescriptions: "处方管理",
+    interactions: "药物互作",
+    inventory: "库存管理",
+    "health-data": "健康数据",
+    vitals: "生命体征",
+    tests: "检测结果",
+    trends: "趋势分析",
+    import: "数据导入",
+    research: "医学研究",
+    analysis: "数据分析",
+    samples: "样本管理",
+    trials: "试验设计",
+    certifications: "资质验证",
+    upload: "资质上传",
+    status: "验证状态",
+    management: "资质管理",
+    providers: "验证机构",
+    security: "数据安全",
+    access: "访问控制",
+    audit: "审计日志",
+    compliance: "合规管理",
+    "mobile-app": "移动应用",
+    features: "功能管理",
+    feedback: "用户反馈",
+    releases: "版本发布",
+    "ehr-integration": "电子病历",
+    mapping: "数据映射",
+    sync: "同步状态",
+    connections: "系统连接",
+    teleconsultation: "远程会诊",
+    schedule: "排程管理",
+    experts: "专家网络",
+    analytics: "统计分析",
+    distribution: "分布分析",
+    prediction: "预测模型",
+    admin: "系统管理",
+    settings: "系统设置",
+    roles: "角色权限",
+    logs: "系统日志",
+    backup: "数据备份",
+    tasks: "计划任务",
+    notifications: "通知管理",
+    "deployment-check": "部署检查",
+    "api-config": "API配置",
+  }
+
+  // 构建面包屑路径
+  const breadcrumbs = segments.map((segment, index) => {
+    const path = `/${segments.slice(0, index + 1).join("/")}`
+    const label = pathMap[segment] || segment
+    return { path, label }
+  })
 
   return (
-    <nav className={cn("flex items-center text-sm", className)}>
-      <ol className="flex items-center space-x-2">
-        <li>
-          <Link href="/" className="text-muted-foreground hover:text-foreground">
-            <Home className="h-4 w-4" />
-            <span className="sr-only">首页</span>
-          </Link>
-        </li>
+    <nav className="flex items-center text-sm text-gray-500">
+      <Link href="/" className="flex items-center hover:text-gray-900">
+        <Home className="h-4 w-4" />
+        <span className="sr-only">首页</span>
+      </Link>
 
-        {breadcrumbs.map((breadcrumb, i) => (
-          <li key={i} className="flex items-center space-x-2">
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-            {breadcrumb.isCurrent ? (
-              <span className="font-medium">{breadcrumb.label}</span>
-            ) : (
-              <Link href={breadcrumb.href} className="text-muted-foreground hover:text-foreground transition-colors">
-                {breadcrumb.label}
-              </Link>
-            )}
-          </li>
-        ))}
-      </ol>
+      {breadcrumbs.map((breadcrumb, index) => (
+        <div key={breadcrumb.path} className="flex items-center">
+          <ChevronRight className="mx-1 h-4 w-4" />
+          {index === breadcrumbs.length - 1 ? (
+            <span className="font-medium text-gray-900">{breadcrumb.label}</span>
+          ) : (
+            <Link href={breadcrumb.path} className="hover:text-gray-900">
+              {breadcrumb.label}
+            </Link>
+          )}
+        </div>
+      ))}
     </nav>
   )
 }
 
-// 根据路径自动生成面包屑
-function generateBreadcrumbs(pathname: string): Breadcrumb[] {
-  const paths = pathname.split("/").filter(Boolean)
-
-  // 路径映射到用户友好的名称
-  const pathNameMap: Record<string, string> = {
-    patients: "患者管理",
-    records: "病历管理",
-    followup: "随访计划",
-    groups: "患者分组",
-    "ai-diagnosis": "智能诊断",
-    "ai-model": "AI模型管理",
-    analytics: "数据分析",
-    research: "医学研究",
-    "clinical-decision": "临床决策",
-    "ehr-integration": "EHR集成",
-    teleconsultation: "远程会诊",
-    security: "安全管理",
-    admin: "系统管理",
-    settings: "系统设置",
-    "health-data": "健康数据",
-    medications: "药物管理",
-    "mobile-app": "移动应用",
-    training: "模型训练",
-    deployment: "模型部署",
-    performance: "性能分析",
-  }
-
-  return paths.map((path, i) => {
-    const href = `/${paths.slice(0, i + 1).join("/")}`
-    const isCurrent = i === paths.length - 1
-    const label = pathNameMap[path] || path.charAt(0).toUpperCase() + path.slice(1)
-
-    return { label, href, isCurrent }
-  })
-}
+export default PageBreadcrumb
