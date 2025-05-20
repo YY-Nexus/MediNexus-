@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { SignJWT } from "jose"
-import { getJwtSecretKey } from "@/lib/auth/jwt"
+import { nanoid } from "nanoid"
 
 // 模拟用户数据库
 // 实际项目中应连接到真实数据库
@@ -31,15 +31,12 @@ const users = [
     department: "研发部",
     avatar: "/avatars/researcher.png",
   },
-  {
-    id: "4",
-    email: "china@0379.email",
-    password: "My151001", // 注意大小写
-    name: "系统管理员",
-    role: "admin",
-    avatar: "/avatars/admin.png",
-  },
 ]
+
+// JWT密钥 - 实际项目中应从环境变量获取
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET || "your-secret-key-must-be-at-least-32-characters-long",
+)
 
 export async function POST(request: Request) {
   try {
@@ -69,12 +66,13 @@ export async function POST(request: Request) {
       avatar: user.avatar,
     }
 
-    // 使用 jose 库生成 JWT 令牌
+    // 生成JWT令牌 - 使用jose库替代jsonwebtoken
     const token = await new SignJWT({ ...userWithoutPassword })
       .setProtectedHeader({ alg: "HS256" })
+      .setJti(nanoid())
       .setIssuedAt()
       .setExpirationTime("24h")
-      .sign(getJwtSecretKey())
+      .sign(JWT_SECRET)
 
     // 返回用户信息和令牌
     return NextResponse.json({

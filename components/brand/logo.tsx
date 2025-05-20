@@ -1,3 +1,5 @@
+"use client"
+
 import { cn } from "@/lib/utils"
 
 interface LogoProps {
@@ -37,3 +39,6 @@ export function BrandLogo({ variant = "full", className }: LogoProps) {
     </div>
   )
 }
+
+// 添加Logo命名导出，指向BrandLogo组件
+export const Logo = BrandLogo

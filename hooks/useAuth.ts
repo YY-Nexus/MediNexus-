@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useCallback } from "react"
 import { useAuthStore } from "@/store/useAuthStore"
 
 export function useAuth() {
@@ -8,30 +8,35 @@ export function useAuth() {
     useAuthStore()
 
   // 检查用户是否有特定权限
-  const hasPermission = (requiredRole: string) => {
-    if (!user) return false
+  const hasPermission = useCallback(
+    (requiredRole: string) => {
+      if (!user) return false
 
-    // 如果用户是管理员，拥有所有权限
-    if (user.role === "admin") return true
-
-    // 检查用户角色是否匹配所需角色
-    return user.role === requiredRole
-  }
-
-  // 在组件挂载时尝试刷新令牌
-  useEffect(() => {
-    if (token && !isAuthenticated) {
-      refreshToken()
-    }
-  }, [token, isAuthenticated, refreshToken])
+      // 简单的基于角色的权限检查
+      // 在实际应用中，可能需要更复杂的权限系统
+      switch (requiredRole) {
+        case "admin":
+          return user.role === "admin"
+        case "doctor":
+          return user.role === "doctor" || user.role === "admin"
+        case "researcher":
+          return user.role === "researcher" || user.role === "admin"
+        default:
+          return false
+      }
+    },
+    [user],
+  )
 
   return {
     user,
+    token,
     isAuthenticated,
     isLoading,
     error,
     login,
     logout,
+    refreshToken,
     updateUser,
     clearError,
     hasPermission,

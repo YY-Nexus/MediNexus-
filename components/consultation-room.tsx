@@ -20,9 +20,7 @@ import {
   ImageIcon,
   FilePlus,
   Paperclip,
-  CalendarClock,
 } from "lucide-react"
-import Link from "next/link"
 
 // 模拟参与者数据
 const participants = [
@@ -141,18 +139,6 @@ export function ConsultationRoom() {
         <div className="flex justify-between items-center">
           <CardTitle>心脏病例远程会诊</CardTitle>
           <div className="flex gap-2">
-            <Link href="/teleconsultation/records">
-              <Button variant="outline" size="sm">
-                <FileText className="w-4 h-4 mr-2" />
-                查看记录
-              </Button>
-            </Link>
-            <Link href="/teleconsultation/schedule">
-              <Button variant="outline" size="sm">
-                <CalendarClock className="w-4 h-4 mr-2" />
-                排程
-              </Button>
-            </Link>
             <Button variant="destructive" size="sm">
               <Phone className="w-4 h-4 mr-2" />
               结束会诊
@@ -199,11 +185,6 @@ export function ConsultationRoom() {
                     </Button>
                     <Button variant="default" size="icon">
                       <MoreVertical className="w-4 h-4" />
-                    </Button>
-                    <Button variant="default" size="icon">
-                      <Link href="/teleconsultation/experts">
-                        <Users className="w-4 h-4" />
-                      </Link>
                     </Button>
                   </div>
                 </div>

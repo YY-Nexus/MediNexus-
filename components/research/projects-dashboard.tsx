@@ -368,3 +368,6 @@ export function ResearchProjectsDashboard() {
     </Card>
   )
 }
+
+// 为了兼容性，将 ResearchProjectsDashboard 也导出为 ProjectsDashboard
+export const ProjectsDashboard = ResearchProjectsDashboard

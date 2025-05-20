@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server"
-import { SignJWT } from "jose"
-import { getJwtSecretKey, verifyJwtToken } from "@/lib/auth/jwt"
+import { jwtVerify, SignJWT } from "jose"
+import { nanoid } from "nanoid"
+
+// JWT密钥 - 实际项目中应从环境变量获取
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET || "your-secret-key-must-be-at-least-32-characters-long",
+)
 
 export async function POST(request: Request) {
   try {
@@ -12,34 +17,35 @@ export async function POST(request: Request) {
 
     const token = authHeader.substring(7)
 
-    // 验证令牌
-    const payload = await verifyJwtToken(token)
+    try {
+      // 验证令牌 - 使用jose库替代jsonwebtoken
+      const { payload } = await jwtVerify(token, JWT_SECRET)
 
-    if (!payload) {
+      // 创建新令牌（不包含密码）
+      const userWithoutPassword = {
+        id: payload.id as string,
+        email: payload.email as string,
+        name: payload.name as string,
+        role: payload.role as string,
+        department: payload.department as string,
+        avatar: payload.avatar as string,
+      }
+
+      // 生成新的JWT令牌
+      const newToken = await new SignJWT({ ...userWithoutPassword })
+        .setProtectedHeader({ alg: "HS256" })
+        .setJti(nanoid())
+        .setIssuedAt()
+        .setExpirationTime("24h")
+        .sign(JWT_SECRET)
+
+      // 返回新令牌
+      return NextResponse.json({
+        token: newToken,
+      })
+    } catch (error) {
       return NextResponse.json({ message: "无效或已过期的令牌" }, { status: 401 })
     }
-
-    // 创建新令牌（不包含密码）
-    const userWithoutPassword = {
-      id: payload.id,
-      email: payload.email,
-      name: payload.name,
-      role: payload.role,
-      department: payload.department,
-      avatar: payload.avatar,
-    }
-
-    // 生成新的JWT令牌
-    const newToken = await new SignJWT({ ...userWithoutPassword })
-      .setProtectedHeader({ alg: "HS256" })
-      .setIssuedAt()
-      .setExpirationTime("24h")
-      .sign(getJwtSecretKey())
-
-    // 返回新令牌
-    return NextResponse.json({
-      token: newToken,
-    })
   } catch (error) {
     console.error("刷新令牌错误:", error)
     return NextResponse.json({ message: "刷新令牌时发生错误" }, { status: 500 })

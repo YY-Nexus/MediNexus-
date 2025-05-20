@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -22,21 +22,6 @@ export function DiagnosisForm() {
     differentials: string[]
     recommendations: string[]
   }>(null)
-
-  const [patients, setPatients] = useState([])
-  const [selectedPatient, setSelectedPatient] = useState("")
-
-  useEffect(() => {
-    // 在实际应用中，这里应该从API获取患者数据
-    const mockPatients = [
-      { id: "P-10045", name: "张三", age: 45, gender: "男" },
-      { id: "P-10078", name: "李四", age: 62, gender: "女" },
-      { id: "P-10103", name: "王五", age: 38, gender: "男" },
-      { id: "P-10056", name: "赵六", age: 51, gender: "女" },
-      { id: "P-10112", name: "钱七", age: 29, gender: "男" },
-    ]
-    setPatients(mockPatients)
-  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -73,24 +58,6 @@ export function DiagnosisForm() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="mb-6">
-              <Label htmlFor="patient-select">选择患者</Label>
-              <Select value={selectedPatient} onValueChange={setSelectedPatient}>
-                <SelectTrigger id="patient-select" className="w-full">
-                  <SelectValue placeholder="选择要诊断的患者" />
-                </SelectTrigger>
-                <SelectContent>
-                  {patients.map((patient) => (
-                    <SelectItem key={patient.id} value={patient.id}>
-                      {patient.name} ({patient.id}) - {patient.age}岁, {patient.gender}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {selectedPatient && (
-                <div className="mt-2 p-2 bg-blue-50 rounded-md text-sm">已选择患者记录将自动关联到AI诊断结果</div>
-              )}
-            </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="age">年龄</Label>

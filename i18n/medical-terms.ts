@@ -757,4 +757,10 @@ export const medicalTerms: Record<Locale, Record<MedicalTermKey, string>> = {
     "ai_model.gemini": "Gemini Model",
     "ai_model.claude": "Claude Model",
   },
+  "ja-JP": {
+    // 日语翻译（暂时为空）
+  },
+  "ko-KR": {
+    // 韩语翻译（暂时为空）
+  },
 }

@@ -1,283 +1,232 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
-  Stethoscope,
+  BarChart,
   Users,
-  Lightbulb,
+  FileText,
+  Settings,
+  Stethoscope,
   Pill,
   Activity,
-  Microscope,
-  Shield,
-  Lock,
-  Smartphone,
   Database,
-  Video,
-  BarChart,
-  Settings,
-  ChevronDown,
-  Home,
+  Smartphone,
+  Network,
+  Shield,
+  BookOpen,
+  Brain,
+  Microscope,
+  Crosshair,
 } from "lucide-react"
 
-// 导航项类型定义
-type NavItem = {
-  title: string
-  href: string
-  icon: React.ReactNode
-  submenu?: NavItem[]
-}
-
-// 导航数据
-const navItems: NavItem[] = [
-  {
-    title: "首页",
-    href: "/",
-    icon: <Home className="h-5 w-5" />,
-  },
-  {
-    title: "智能诊断",
-    href: "/ai-diagnosis",
-    icon: <Stethoscope className="h-5 w-5" />,
-    submenu: [
-      { title: "诊断中心", href: "/ai-diagnosis", icon: <Stethoscope className="h-4 w-4" /> },
-      { title: "模型管理", href: "/ai-model", icon: <Settings className="h-4 w-4" /> },
-      { title: "诊断记录", href: "/ai-diagnosis/records", icon: <Database className="h-4 w-4" /> },
-      { title: "模型训练", href: "/ai-model/training", icon: <Activity className="h-4 w-4" /> },
-      { title: "性能分析", href: "/ai-model/performance", icon: <BarChart className="h-4 w-4" /> },
-      { title: "模型部署", href: "/ai-model/deployment", icon: <Database className="h-4 w-4" /> },
-    ],
-  },
-  {
-    title: "患者管理",
-    href: "/patients",
-    icon: <Users className="h-5 w-5" />,
-    submenu: [
-      { title: "患者列表", href: "/patients", icon: <Users className="h-4 w-4" /> },
-      { title: "病历管理", href: "/patients/records", icon: <Database className="h-4 w-4" /> },
-      { title: "随访计划", href: "/patients/followup", icon: <Activity className="h-4 w-4" /> },
-      { title: "患者分组", href: "/patients/groups", icon: <Users className="h-4 w-4" /> },
-    ],
-  },
-  {
-    title: "临床决策",
-    href: "/clinical-decision",
-    icon: <Lightbulb className="h-5 w-5" />,
-    submenu: [
-      { title: "决策支持", href: "/clinical-decision", icon: <Lightbulb className="h-4 w-4" /> },
-      { title: "治疗方案", href: "/clinical-decision/treatments", icon: <Activity className="h-4 w-4" /> },
-      { title: "临床指南", href: "/clinical-decision/guidelines", icon: <Database className="h-4 w-4" /> },
-      { title: "药物参考", href: "/clinical-decision/drug-reference", icon: <Pill className="h-4 w-4" /> },
-    ],
-  },
-  {
-    title: "药物管理",
-    href: "/medications",
-    icon: <Pill className="h-5 w-5" />,
-    submenu: [
-      { title: "药品目录", href: "/medications", icon: <Pill className="h-4 w-4" /> },
-      { title: "处方管理", href: "/medications/prescriptions", icon: <Database className="h-4 w-4" /> },
-      { title: "药物互作", href: "/medications/interactions", icon: <Activity className="h-4 w-4" /> },
-      { title: "库存管理", href: "/medications/inventory", icon: <Database className="h-4 w-4" /> },
-    ],
-  },
-  {
-    title: "健康数据",
-    href: "/health-data",
-    icon: <Activity className="h-5 w-5" />,
-    submenu: [
-      { title: "数据概览", href: "/health-data", icon: <Activity className="h-4 w-4" /> },
-      { title: "生命体征", href: "/health-data/vitals", icon: <Activity className="h-4 w-4" /> },
-      { title: "检测结果", href: "/health-data/tests", icon: <Database className="h-4 w-4" /> },
-      { title: "趋势分析", href: "/health-data/trends", icon: <BarChart className="h-4 w-4" /> },
-      { title: "数据导入", href: "/health-data/import", icon: <Database className="h-4 w-4" /> },
-    ],
-  },
-  {
-    title: "医学研究",
-    href: "/research",
-    icon: <Microscope className="h-5 w-5" />,
-    submenu: [
-      { title: "研究项目", href: "/research", icon: <Microscope className="h-4 w-4" /> },
-      { title: "数据分析", href: "/research/analysis", icon: <BarChart className="h-4 w-4" /> },
-      { title: "样本管理", href: "/research/samples", icon: <Database className="h-4 w-4" /> },
-      { title: "试验设计", href: "/research/trials", icon: <Activity className="h-4 w-4" /> },
-    ],
-  },
-  {
-    title: "资质验证",
-    href: "/certifications",
-    icon: <Shield className="h-5 w-5" />,
-    submenu: [
-      { title: "资质概览", href: "/certifications", icon: <Shield className="h-4 w-4" /> },
-      { title: "资质上传", href: "/certifications/upload", icon: <Database className="h-4 w-4" /> },
-      { title: "验证状态", href: "/certifications/status", icon: <Activity className="h-4 w-4" /> },
-      { title: "资质管理", href: "/certifications/management", icon: <Settings className="h-4 w-4" /> },
-      { title: "验证机构", href: "/certifications/providers", icon: <Shield className="h-4 w-4" /> },
-      { title: "API配置", href: "/admin/api-config", icon: <Settings className="h-4 w-4" /> },
-    ],
-  },
-  {
-    title: "数据安全",
-    href: "/security",
-    icon: <Lock className="h-5 w-5" />,
-    submenu: [
-      { title: "安全概览", href: "/security", icon: <Lock className="h-4 w-4" /> },
-      { title: "访问控制", href: "/security/access", icon: <Lock className="h-4 w-4" /> },
-      { title: "审计日志", href: "/security/audit", icon: <Database className="h-4 w-4" /> },
-      { title: "合规管理", href: "/security/compliance", icon: <Shield className="h-4 w-4" /> },
-    ],
-  },
-  {
-    title: "移动应用",
-    href: "/mobile-app",
-    icon: <Smartphone className="h-5 w-5" />,
-    submenu: [
-      { title: "应用概览", href: "/mobile-app", icon: <Smartphone className="h-4 w-4" /> },
-      { title: "功能管理", href: "/mobile-app/features", icon: <Settings className="h-4 w-4" /> },
-      { title: "用户反馈", href: "/mobile-app/feedback", icon: <Users className="h-4 w-4" /> },
-      { title: "版本发布", href: "/mobile-app/releases", icon: <Database className="h-4 w-4" /> },
-    ],
-  },
-  {
-    title: "电子病历",
-    href: "/ehr-integration",
-    icon: <Database className="h-5 w-5" />,
-    submenu: [
-      { title: "集成概览", href: "/ehr-integration", icon: <Database className="h-4 w-4" /> },
-      { title: "数据映射", href: "/ehr-integration/mapping", icon: <Activity className="h-4 w-4" /> },
-      { title: "同步状态", href: "/ehr-integration/sync", icon: <Activity className="h-4 w-4" /> },
-      { title: "系统连接", href: "/ehr-integration/connections", icon: <Database className="h-4 w-4" /> },
-    ],
-  },
-  {
-    title: "远程会诊",
-    href: "/teleconsultation",
-    icon: <Video className="h-5 w-5" />,
-    submenu: [
-      { title: "会诊中心", href: "/teleconsultation", icon: <Video className="h-4 w-4" /> },
-      { title: "排程管理", href: "/teleconsultation/schedule", icon: <Activity className="h-4 w-4" /> },
-      { title: "专家网络", href: "/teleconsultation/experts", icon: <Users className="h-4 w-4" /> },
-      { title: "会诊记录", href: "/teleconsultation/records", icon: <Database className="h-4 w-4" /> },
-    ],
-  },
-  {
-    title: "统计分析",
-    href: "/analytics",
-    icon: <BarChart className="h-5 w-5" />,
-    submenu: [
-      { title: "数据概览", href: "/analytics", icon: <BarChart className="h-4 w-4" /> },
-      { title: "趋势报告", href: "/analytics/trends", icon: <Activity className="h-4 w-4" /> },
-      { title: "分布分析", href: "/analytics/distribution", icon: <BarChart className="h-4 w-4" /> },
-      { title: "预测模型", href: "/analytics/prediction", icon: <Activity className="h-4 w-4" /> },
-    ],
-  },
-  {
-    title: "系统管理",
-    href: "/admin",
-    icon: <Settings className="h-5 w-5" />,
-    submenu: [
-      { title: "系统设置", href: "/admin/settings", icon: <Settings className="h-4 w-4" /> },
-      { title: "角色权限", href: "/admin/roles", icon: <Lock className="h-4 w-4" /> },
-      { title: "系统日志", href: "/admin/logs", icon: <Database className="h-4 w-4" /> },
-      { title: "数据备份", href: "/admin/backup", icon: <Database className="h-4 w-4" /> },
-      { title: "计划任务", href: "/admin/tasks", icon: <Activity className="h-4 w-4" /> },
-      { title: "通知管理", href: "/admin/notifications", icon: <Activity className="h-4 w-4" /> },
-      { title: "部署检查", href: "/admin/deployment-check", icon: <Shield className="h-4 w-4" /> },
-    ],
-  },
-]
+// 删除导入AnimatedLogo组件
+// import { AnimatedLogo } from "@/components/brand/animated-logo"
 
 export function GlobalNavigation() {
   const pathname = usePathname()
-  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({})
+  const [isOpen, setIsOpen] = useState(false)
 
-  // 切换子菜单的开关状态
-  const toggleSubmenu = (title: string) => {
-    setOpenMenus((prev) => ({
-      ...prev,
-      [title]: !prev[title],
-    }))
+  const toggleMenu = () => {
+    setIsOpen(!isOpen)
   }
 
-  // 检查当前路径是否匹配导航项
-  const isActive = (href: string) => {
-    return pathname === href || pathname.startsWith(`${href}/`)
-  }
-
-  // 检查导航项是否有活跃的子菜单
-  const hasActiveSubmenu = (item: NavItem) => {
-    return item.submenu?.some((subItem) => isActive(subItem.href))
-  }
+  const navItems = [
+    {
+      name: "首页",
+      href: "/",
+      icon: <Activity className="h-5 w-5" />,
+    },
+    {
+      name: "患者管理",
+      href: "/patients",
+      icon: <Users className="h-5 w-5" />,
+    },
+    {
+      name: "医疗记录",
+      href: "/medical-records",
+      icon: <FileText className="h-5 w-5" />,
+    },
+    {
+      name: "临床决策",
+      href: "/clinical-decision",
+      icon: <Stethoscope className="h-5 w-5" />,
+    },
+    {
+      name: "药物管理",
+      href: "/medications",
+      icon: <Pill className="h-5 w-5" />,
+    },
+    {
+      name: "健康数据",
+      href: "/health-data",
+      icon: <Activity className="h-5 w-5" />,
+    },
+    {
+      name: "数据分析",
+      href: "/analytics",
+      icon: <BarChart className="h-5 w-5" />,
+    },
+    {
+      name: "EHR集成",
+      href: "/ehr-integration",
+      icon: <Database className="h-5 w-5" />,
+    },
+    {
+      name: "移动应用",
+      href: "/mobile-app",
+      icon: <Smartphone className="h-5 w-5" />,
+    },
+    {
+      name: "远程会诊",
+      href: "/teleconsultation",
+      icon: <Network className="h-5 w-5" />,
+    },
+    {
+      name: "AI模型",
+      href: "/ai-model",
+      icon: <Brain className="h-5 w-5" />,
+    },
+    {
+      name: "安全管理",
+      href: "/security",
+      icon: <Shield className="h-5 w-5" />,
+    },
+    {
+      name: "研究项目",
+      href: "/research",
+      icon: <Microscope className="h-5 w-5" />,
+    },
+    {
+      name: "品牌资产",
+      href: "/brand",
+      icon: <Settings className="h-5 w-5" />,
+    },
+    {
+      name: "医学知识库",
+      href: "/knowledge-base",
+      icon: <BookOpen className="h-5 w-5" />,
+    },
+    {
+      name: "知识图谱",
+      href: "/knowledge-graph",
+      icon: <Network className="h-5 w-5" />,
+    },
+    {
+      name: "影像特征库",
+      href: "/imaging-features",
+      icon: <Crosshair className="h-5 w-5" />,
+    },
+  ]
 
   return (
-    <nav className="space-y-1 p-3">
-      {navItems.map((item) => (
-        <div key={item.title} className="space-y-1">
-          {item.submenu ? (
-            <>
-              <button
-                onClick={() => toggleSubmenu(item.title)}
-                className={cn(
-                  "flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium",
-                  (isActive(item.href) || hasActiveSubmenu(item)) && !openMenus[item.title]
-                    ? "bg-blue-100 text-blue-900"
-                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900",
-                )}
+    <nav className="bg-white shadow-sm border-b">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex">
+            <div className="flex-shrink-0 flex items-center">
+              <Link href="/" className="flex items-center">
+                {/* 删除AnimatedLogo组件 */}
+              </Link>
+            </div>
+            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+              {navItems.slice(0, 7).map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                    pathname === item.href
+                      ? "border-blue-500 text-gray-900"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+              <div className="relative inline-block text-left group">
+                <button className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
+                  更多
+                </button>
+                <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden group-hover:block z-10">
+                  <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                    {navItems.slice(7).map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`block px-4 py-2 text-sm ${
+                          pathname === item.href
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                        }`}
+                        role="menuitem"
+                      >
+                        <div className="flex items-center">
+                          {item.icon}
+                          <span className="ml-3">{item.name}</span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="-mr-2 flex items-center sm:hidden">
+            <Button variant="ghost" onClick={toggleMenu} className="inline-flex items-center justify-center p-2">
+              <span className="sr-only">打开主菜单</span>
+              {isOpen ? (
+                <svg
+                  className="block h-6 w-6"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg
+                  className="block h-6 w-6"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </Button>
+          </div>
+          {/* 删除了此处可能存在的语言切换器 */}
+        </div>
+      </div>
+
+      {isOpen && (
+        <div className="sm:hidden">
+          <div className="pt-2 pb-3 space-y-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
+                  pathname === item.href
+                    ? "bg-blue-50 border-blue-500 text-blue-700"
+                    : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"
+                }`}
               >
                 <div className="flex items-center">
-                  <span className="mr-3 text-gray-500">{item.icon}</span>
-                  {item.title}
+                  {item.icon}
+                  <span className="ml-3">{item.name}</span>
                 </div>
-                <ChevronDown
-                  className={cn(
-                    "h-4 w-4 text-gray-500 transition-transform",
-                    openMenus[item.title] ? "rotate-180" : "",
-                  )}
-                />
-              </button>
-              {openMenus[item.title] && (
-                <div className="ml-6 space-y-1 border-l-2 border-gray-200 pl-2">
-                  {item.submenu.map((subItem) => (
-                    <Link
-                      key={subItem.href}
-                      href={subItem.href}
-                      className={cn(
-                        "flex items-center rounded-md px-3 py-2 text-sm font-medium",
-                        isActive(subItem.href)
-                          ? "bg-blue-100 text-blue-900"
-                          : "text-gray-700 hover:bg-gray-100 hover:text-gray-900",
-                      )}
-                    >
-                      <span className="mr-3 text-gray-500">{subItem.icon}</span>
-                      {subItem.title}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </>
-          ) : (
-            <Link
-              href={item.href}
-              className={cn(
-                "flex items-center rounded-md px-3 py-2 text-sm font-medium",
-                isActive(item.href)
-                  ? "bg-blue-100 text-blue-900"
-                  : "text-gray-700 hover:bg-gray-100 hover:text-gray-900",
-              )}
-            >
-              <span className="mr-3 text-gray-500">{item.icon}</span>
-              {item.title}
-            </Link>
-          )}
+              </Link>
+            ))}
+          </div>
         </div>
-      ))}
+      )}
     </nav>
   )
 }
-
-export default GlobalNavigation

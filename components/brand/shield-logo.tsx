@@ -6,19 +6,24 @@ import Image from "next/image"
 import { cn } from "@/lib/utils"
 
 interface ShieldLogoProps {
-  size?: "xs" | "sm" | "md" | "lg" | "xl"
-  animated?: boolean
-  className?: string
-  showText?: boolean
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  animated?: boolean;
+  className?: string;
+  showText?: boolean;
 }
 
-export function ShieldLogo({ size = "md", animated = true, className = "", showText = true }: ShieldLogoProps) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [isMounted, setIsMounted] = useState(false)
+export function ShieldLogo({ 
+  size = "md", 
+  animated = true, 
+  className = "", 
+  showText = true 
+}: ShieldLogoProps) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true)
-  }, [])
+    setIsMounted(true);
+  }, []);
 
   // 根据尺寸确定宽高
   const dimensions = {
@@ -27,16 +32,16 @@ export function ShieldLogo({ size = "md", animated = true, className = "", showT
     md: { width: 48, height: 48 },
     lg: { width: 64, height: 64 },
     xl: { width: 96, height: 96 },
-  }
+  };
 
-  const { width, height } = dimensions[size]
+  const { width, height } = dimensions[size];
 
   // 如果不支持客户端动画，则返回静态版本
   if (!isMounted || !animated) {
     return (
       <div className={cn("relative flex items-center", className)}>
         <Image
-          src="/yanyu-shield-logo.png"
+          src="/yanyu-cloud-logo.png"
           alt="言语云³ Logo"
           width={width}
           height={height}
@@ -48,7 +53,7 @@ export function ShieldLogo({ size = "md", animated = true, className = "", showT
           </span>
         )}
       </div>
-    )
+    );
   }
 
   return (
@@ -66,7 +71,7 @@ export function ShieldLogo({ size = "md", animated = true, className = "", showT
         transition={{ duration: 0.3 }}
       >
         <Image
-          src="/yanyu-shield-logo.png"
+          src="/yanyu-cloud-logo.png"
           alt="言语云³ Logo"
           width={width}
           height={height}
@@ -88,5 +93,5 @@ export function ShieldLogo({ size = "md", animated = true, className = "", showT
         </motion.span>
       )}
     </div>
-  )
+  );
 }

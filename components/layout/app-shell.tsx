@@ -4,11 +4,11 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
+import { SidebarNav } from "@/components/layout/sidebar-nav"
 import { AppHeader } from "@/components/layout/app-header"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
 import { KeyboardShortcutsDialog } from "@/components/layout/keyboard-shortcuts-dialog"
-import { SidebarNav } from "@/components/layout/sidebar-nav"
 
 interface AppShellProps {
   children: React.ReactNode

@@ -107,7 +107,7 @@ const patients = [
   })),
 ]
 
-export default function PatientList() {
+export function PatientList() {
   const [sortColumn, setSortColumn] = useState<string | null>(null)
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })

@@ -23,7 +23,7 @@ const trendData = [
   { date: "2023-12", 患者满意度: 96, 医生效率: 90, 治疗成功率: 91 },
 ]
 
-export function TrendReports() {
+export default function TrendReports() {
   return (
     <Card className="w-full">
       <CardHeader>
@@ -140,5 +140,3 @@ export function TrendReports() {
     </Card>
   )
 }
-
-export default TrendReports

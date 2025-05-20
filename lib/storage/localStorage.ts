@@ -100,18 +100,18 @@ export function createNamespacedStorage(namespace: string) {
 
   return {
     setItem: <T,>(key: string, value: T): void => {
-      setItem<T>(`${prefix}${key}`, value)
+      setItem(prefix + key, value)
     },
-    getItem: <T,>(key: string, defaultValue: T): T => getItem<T>(`${prefix}${key}`, defaultValue),
+    getItem: <T,>(key: string, defaultValue: T): T => getItem(prefix + key, defaultValue),
     removeItem: (key: string): void => {
-      removeItem(`${prefix}${key}`)
+      removeItem(prefix + key)
     },
     clear: (): void => {
       const allKeys = getAllKeys()
       const namespacedKeys = allKeys.filter((key) => key.startsWith(prefix))
       namespacedKeys.forEach((namespacedKey) => removeItem(namespacedKey))
     },
-    hasKey: (key: string): boolean => hasKey(`${prefix}${key}`),
+    hasKey: (key: string): boolean => hasKey(prefix + key),
     getAllKeys: (): string[] => {
       const allKeys = getAllKeys()
       return allKeys.filter((key) => key.startsWith(prefix)).map((key) => key.substring(prefix.length))

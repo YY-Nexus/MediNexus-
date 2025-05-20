@@ -39,9 +39,6 @@ import {
   Clock,
   AlertCircle,
   Bell,
-  BarChart2,
-  User,
-  Cog,
 } from "lucide-react"
 
 export const navItems = [
@@ -126,7 +123,6 @@ export const navItems = [
       { title: "验证状态", href: "/certifications/status", icon: CheckCircle },
       { title: "资质管理", href: "/certifications/management", icon: UserCheck },
       { title: "验证机构", href: "/certifications/providers", icon: ShieldCheck },
-      { title: "验证统计", href: "/certifications/statistics", icon: BarChart2 },
       { title: "API配置", href: "/admin/api-config", icon: Key },
     ],
   },
@@ -138,7 +134,6 @@ export const navItems = [
       { title: "访问控制", href: "/security/access", icon: UserCog },
       { title: "审计日志", href: "/security/audit", icon: ClipboardList },
       { title: "合规管理", href: "/security/compliance", icon: BadgeAlert },
-      { title: "账户安全", href: "/security/account", icon: User },
     ],
   },
   {
@@ -159,7 +154,6 @@ export const navItems = [
       { title: "数据映射", href: "/ehr-integration/mapping", icon: Workflow },
       { title: "同步状态", href: "/ehr-integration/sync", icon: Activity },
       { title: "系统连接", href: "/ehr-integration/connections", icon: Settings },
-      { title: "集成设置", href: "/ehr-integration/settings", icon: Cog },
     ],
   },
   {
