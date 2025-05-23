@@ -1,8 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { LineChart, BarChart } from "recharts"
-
+import { LineChart as RechartsLineChart, BarChart as RechartsBarChart } from "recharts"
 import { cn } from "@/lib/utils"
 
 interface ChartConfig {
@@ -71,4 +70,6 @@ export function ChartTooltipContent({ active, payload, label }: ChartTooltipProp
   )
 }
 
-export { BarChart, LineChart }
+// 导出 recharts 的 LineChart 和 BarChart 组件
+export const LineChart = RechartsLineChart
+export const BarChart = RechartsBarChart
