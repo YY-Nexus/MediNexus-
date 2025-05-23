@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
@@ -28,6 +28,9 @@ export function RoleBasedSidebar({ isCollapsed, setIsCollapsed, className }: Rol
   const [openGroups, setOpenGroups] = useState<string[]>([])
   const [currentRole, setCurrentRole] = useState<string>("doctor")
   const [navItems, setNavItems] = useState<NavGroup[]>(optimizedNavItems)
+  const [activeItem, setActiveItem] = useState<string | null>(null)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const sidebarRef = useRef<HTMLElement>(null)
 
   // 角色列表
   const roles = [
@@ -65,11 +68,21 @@ export function RoleBasedSidebar({ isCollapsed, setIsCollapsed, className }: Rol
     })
   }, [pathname, openGroups, navItems])
 
+  // 处理侧边栏折叠/展开的动画
+  const handleToggleSidebar = () => {
+    setIsAnimating(true)
+    setIsCollapsed(!isCollapsed)
+    // 动画结束后重置状态
+    setTimeout(() => {
+      setIsAnimating(false)
+    }, 300) // 与CSS过渡时间相匹配
+  }
+
   // 处理分组的展开/折叠
   const toggleGroup = (title: string) => {
     if (isCollapsed) {
       // 如果侧边栏处于折叠状态，先展开侧边栏
-      setIsCollapsed(false)
+      handleToggleSidebar()
       // 然后确保分组被展开
       if (!openGroups.includes(title)) {
         setOpenGroups((prev) => [...prev, title])
@@ -81,9 +94,13 @@ export function RoleBasedSidebar({ isCollapsed, setIsCollapsed, className }: Rol
   }
 
   // 处理导航项点击
-  const handleNavItemClick = (href: string, e: React.MouseEvent) => {
+  const handleNavItemClick = (href: string, e: React.MouseEvent, title: string) => {
     e.preventDefault() // 阻止默认行为
-    router.push(href) // 使用路由器导航
+    setActiveItem(title)
+    setTimeout(() => {
+      router.push(href) // 使用路由器导航
+      setActiveItem(null)
+    }, 200)
   }
 
   // 检查分组是否展开
@@ -98,6 +115,7 @@ export function RoleBasedSidebar({ isCollapsed, setIsCollapsed, className }: Rol
   return (
     <TooltipProvider delayDuration={100}>
       <aside
+        ref={sidebarRef}
         className={cn(
           "h-screen border-r bg-white dark:bg-gray-950 flex flex-col",
           isCollapsed ? "w-[70px]" : "w-[280px]",
@@ -109,17 +127,39 @@ export function RoleBasedSidebar({ isCollapsed, setIsCollapsed, className }: Rol
         <div className="h-16 border-b flex items-center px-4 justify-between">
           {!isCollapsed ? (
             <>
-              <Link href="/" className="flex items-center">
+              <Link
+                href="/"
+                className={cn(
+                  "flex items-center",
+                  "transition-all duration-300 ease-in-out hover:scale-105",
+                  isAnimating && isCollapsed ? "opacity-0 translate-x-5" : "opacity-100 translate-x-0",
+                )}
+              >
                 <ShieldLogo size="md" showText={true} />
               </Link>
-              <MedicalButton variant="ghost" size="icon" onClick={() => setIsCollapsed(true)} aria-label="折叠侧边栏">
-                <X className="h-4 w-4" />
+              <MedicalButton
+                variant="ghost"
+                size="icon"
+                onClick={handleToggleSidebar}
+                aria-label="折叠侧边栏"
+                className={cn(
+                  "transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 active:scale-95",
+                  "animate-in fade-in duration-300",
+                )}
+              >
+                <X className="h-4 w-4 transition-transform duration-300 hover:rotate-90" />
               </MedicalButton>
             </>
           ) : (
             <div className="flex w-full justify-center items-center">
-              <MedicalButton variant="ghost" size="icon" onClick={() => setIsCollapsed(false)} aria-label="展开侧边栏">
-                <Menu className="h-5 w-5" />
+              <MedicalButton
+                variant="ghost"
+                size="icon"
+                onClick={handleToggleSidebar}
+                aria-label="展开侧边栏"
+                className="transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 active:scale-95"
+              >
+                <Menu className="h-5 w-5 transition-transform duration-300 hover:rotate-180" />
               </MedicalButton>
             </div>
           )}
@@ -127,14 +167,24 @@ export function RoleBasedSidebar({ isCollapsed, setIsCollapsed, className }: Rol
 
         {/* 角色选择器 */}
         {!isCollapsed && (
-          <div className="p-4 border-b">
+          <div
+            className={cn(
+              "p-4 border-b",
+              "transition-all duration-300 ease-in-out",
+              isAnimating ? "opacity-0 translate-y-5" : "opacity-100 translate-y-0",
+            )}
+          >
             <Select value={currentRole} onValueChange={setCurrentRole}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full transition-all duration-200 hover:border-blue-300 focus:ring-blue-200">
                 <SelectValue placeholder="选择角色" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="animate-in zoom-in-90 duration-200">
                 {roles.map((role) => (
-                  <SelectItem key={role.id} value={role.id}>
+                  <SelectItem
+                    key={role.id}
+                    value={role.id}
+                    className="transition-colors duration-200 hover:bg-blue-50 focus:bg-blue-50 focus:text-blue-700"
+                  >
                     {role.name}
                   </SelectItem>
                 ))}
@@ -145,11 +195,23 @@ export function RoleBasedSidebar({ isCollapsed, setIsCollapsed, className }: Rol
 
         {/* 导航区域 */}
         <ScrollArea className="flex-1">
-          <nav className="p-2">
+          <nav
+            className={cn(
+              "p-2",
+              "transition-all duration-300 ease-in-out",
+              isAnimating && isCollapsed ? "opacity-0" : "opacity-100",
+            )}
+          >
             {navItems.map((group) => (
               <div key={group.title} className="mb-4">
                 {!isCollapsed && (
-                  <h3 className="px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
+                  <h3
+                    className={cn(
+                      "px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1",
+                      "transition-all duration-300 ease-in-out",
+                      isAnimating ? "opacity-0 translate-x-5" : "opacity-100 translate-x-0",
+                    )}
+                  >
                     {group.title}
                   </h3>
                 )}
@@ -161,24 +223,25 @@ export function RoleBasedSidebar({ isCollapsed, setIsCollapsed, className }: Rol
                           <CollapsibleTrigger
                             onClick={() => toggleGroup(item.title)}
                             className={cn(
-                              "flex w-full items-center justify-between rounded-md px-3 py-2",
-                              "text-sm font-medium transition-colors hover:bg-muted",
+                              "flex w-full items-center justify-between rounded-md px-3 py-2 group",
+                              "text-sm font-medium transition-all duration-200 ease-in-out",
+                              "hover:bg-blue-50 hover:shadow-sm active:bg-blue-100 active:scale-[0.98]",
                               isItemActive(item.children[0].href) && !isCollapsed
-                                ? "bg-medical-50 text-medical-700"
-                                : "text-muted-foreground hover:text-foreground",
+                                ? "bg-blue-50 text-blue-700 shadow-sm"
+                                : "text-muted-foreground hover:text-blue-700",
                             )}
                           >
                             {isCollapsed ? (
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <div className="flex items-center justify-center w-full py-1 relative">
-                                    <item.icon className="h-5 w-5" />
+                                    <item.icon className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
                                     {item.badge && (
-                                      <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-medical-500" />
+                                      <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
                                     )}
                                   </div>
                                 </TooltipTrigger>
-                                <TooltipContent side="right">
+                                <TooltipContent side="right" className="animate-in zoom-in-50 duration-200">
                                   <div>
                                     {item.title}
                                     {item.badge && (
@@ -192,41 +255,74 @@ export function RoleBasedSidebar({ isCollapsed, setIsCollapsed, className }: Rol
                             ) : (
                               <>
                                 <div className="flex items-center gap-3">
-                                  <item.icon className="h-5 w-5" />
-                                  <span>{item.title}</span>
+                                  <item.icon className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
+                                  <span
+                                    className={cn(
+                                      "transition-all duration-300 ease-in-out",
+                                      isAnimating && isCollapsed
+                                        ? "opacity-0 translate-x-5"
+                                        : "opacity-100 translate-x-0",
+                                    )}
+                                  >
+                                    {item.title}
+                                  </span>
                                   {item.badge && (
-                                    <Badge variant="outline" className="ml-auto text-[10px] py-0 h-4">
+                                    <Badge
+                                      variant="outline"
+                                      className={cn(
+                                        "ml-auto text-[10px] py-0 h-4",
+                                        "transition-all duration-300 ease-in-out group-hover:bg-blue-100 group-hover:text-blue-700",
+                                        isAnimating && isCollapsed ? "opacity-0" : "opacity-100",
+                                      )}
+                                    >
                                       {item.badge}
                                     </Badge>
                                   )}
                                 </div>
-                                {isGroupOpen(item.title) ? (
-                                  <ChevronDown className="h-4 w-4" />
-                                ) : (
-                                  <ChevronRight className="h-4 w-4" />
-                                )}
+                                <div
+                                  className={cn(
+                                    "transition-all duration-300 ease-in-out group-hover:scale-110",
+                                    isAnimating && isCollapsed ? "opacity-0" : "opacity-100",
+                                  )}
+                                >
+                                  {isGroupOpen(item.title) ? (
+                                    <ChevronDown className="h-4 w-4 animate-in zoom-in-75 duration-200" />
+                                  ) : (
+                                    <ChevronRight className="h-4 w-4 animate-in zoom-in-75 duration-200" />
+                                  )}
+                                </div>
                               </>
                             )}
                           </CollapsibleTrigger>
-                          <CollapsibleContent className="pl-8 space-y-1 pt-1">
+                          <CollapsibleContent
+                            className={cn(
+                              "pl-8 space-y-1 pt-1",
+                              "animate-in slide-in-from-left-5 duration-300 ease-in-out",
+                            )}
+                          >
                             {!isCollapsed &&
                               item.children.map((child) => (
                                 <a
                                   key={child.href}
                                   href={child.href}
-                                  onClick={(e) => handleNavItemClick(child.href || "", e)}
+                                  onClick={(e) => handleNavItemClick(child.href || "", e, child.title)}
                                   className={cn(
-                                    "flex items-center gap-2 rounded-md px-3 py-1.5",
-                                    "text-sm transition-colors hover:bg-muted",
+                                    "flex items-center gap-2 rounded-md px-3 py-1.5 group",
+                                    "text-sm transition-all duration-200 ease-in-out",
+                                    "hover:bg-blue-50 hover:shadow-sm active:bg-blue-100 active:scale-[0.98]",
                                     isItemActive(child.href)
-                                      ? "font-medium text-foreground bg-muted"
-                                      : "text-muted-foreground hover:text-foreground",
+                                      ? "font-medium text-blue-700 bg-blue-50 shadow-sm"
+                                      : "text-muted-foreground hover:text-blue-700",
+                                    activeItem === child.title && "animate-pulse bg-blue-50",
                                   )}
                                 >
-                                  <child.icon className="h-4 w-4" />
-                                  <span>{child.title}</span>
+                                  <child.icon className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+                                  <span className="animate-in fade-in duration-300">{child.title}</span>
                                   {child.badge && (
-                                    <Badge variant="outline" className="ml-auto text-[10px] py-0 h-4">
+                                    <Badge
+                                      variant="outline"
+                                      className="ml-auto text-[10px] py-0 h-4 transition-all duration-200 group-hover:bg-blue-100 group-hover:text-blue-700"
+                                    >
                                       {child.badge}
                                     </Badge>
                                   )}
@@ -239,34 +335,47 @@ export function RoleBasedSidebar({ isCollapsed, setIsCollapsed, className }: Rol
                           <TooltipTrigger asChild>
                             <a
                               href={item.href}
-                              onClick={(e) => handleNavItemClick(item.href || "", e)}
+                              onClick={(e) => handleNavItemClick(item.href || "", e, item.title)}
                               className={cn(
-                                "flex items-center justify-center rounded-md p-2",
-                                "text-sm font-medium transition-colors hover:bg-muted",
+                                "flex items-center justify-center rounded-md p-2 group",
+                                "text-sm font-medium transition-all duration-200 ease-in-out",
+                                "hover:bg-blue-50 hover:shadow-sm active:bg-blue-100 active:scale-[0.98]",
                                 isItemActive(item.href)
-                                  ? "bg-medical-50 text-medical-700"
-                                  : "text-muted-foreground hover:text-foreground",
+                                  ? "bg-blue-50 text-blue-700 shadow-sm"
+                                  : "text-muted-foreground hover:text-blue-700",
+                                activeItem === item.title && "animate-pulse bg-blue-50",
                               )}
                             >
-                              <item.icon className="h-5 w-5" />
+                              <item.icon className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
                             </a>
                           </TooltipTrigger>
-                          <TooltipContent side="right">{item.title}</TooltipContent>
+                          <TooltipContent side="right" className="animate-in zoom-in-50 duration-200">
+                            {item.title}
+                          </TooltipContent>
                         </Tooltip>
                       ) : (
                         <a
                           href={item.href}
-                          onClick={(e) => handleNavItemClick(item.href || "", e)}
+                          onClick={(e) => handleNavItemClick(item.href || "", e, item.title)}
                           className={cn(
-                            "flex items-center gap-3 rounded-md px-3 py-2",
-                            "text-sm font-medium transition-colors hover:bg-muted",
+                            "flex items-center gap-3 rounded-md px-3 py-2 group",
+                            "text-sm font-medium transition-all duration-200 ease-in-out",
+                            "hover:bg-blue-50 hover:shadow-sm active:bg-blue-100 active:scale-[0.98]",
                             isItemActive(item.href)
-                              ? "bg-medical-50 text-medical-700"
-                              : "text-muted-foreground hover:text-foreground",
+                              ? "bg-blue-50 text-blue-700 shadow-sm"
+                              : "text-muted-foreground hover:text-blue-700",
+                            activeItem === item.title && "animate-pulse bg-blue-50",
                           )}
                         >
-                          <item.icon className="h-5 w-5" />
-                          <span>{item.title}</span>
+                          <item.icon className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
+                          <span
+                            className={cn(
+                              "transition-all duration-300 ease-in-out",
+                              isAnimating && isCollapsed ? "opacity-0 translate-x-5" : "opacity-100 translate-x-0",
+                            )}
+                          >
+                            {item.title}
+                          </span>
                         </a>
                       )}
                     </li>
@@ -281,28 +390,36 @@ export function RoleBasedSidebar({ isCollapsed, setIsCollapsed, className }: Rol
         <div className="border-t p-2">
           <div
             className={cn(
-              "rounded-md bg-gradient-to-r from-medical-50 to-blue-50 dark:from-blue-950/50 dark:to-medical-950/50",
-              "p-3 transition-all duration-300",
+              "rounded-md bg-gradient-to-r from-blue-50 to-blue-50 dark:from-blue-950/50 dark:to-blue-950/50",
+              "p-3 transition-all duration-300 ease-in-out",
+              "hover:shadow-md hover:from-blue-100 hover:to-blue-50 cursor-pointer",
             )}
           >
             {isCollapsed ? (
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex justify-center">
-                    <Sparkles className="h-5 w-5 text-medical-500" />
+                    <Sparkles className="h-5 w-5 text-blue-500 transition-all duration-300 hover:scale-110 hover:text-blue-600 animate-pulse" />
                   </div>
                 </TooltipTrigger>
-                <TooltipContent side="right" className="w-40">
+                <TooltipContent side="right" className="w-40 animate-in zoom-in-50 duration-200">
                   <p className="font-medium">升级至专业版</p>
                   <p className="text-xs opacity-70">解锁全部高级功能</p>
                 </TooltipContent>
               </Tooltip>
             ) : (
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-medical-500" />
-                <div>
-                  <p className="text-sm font-medium text-medical-700 dark:text-medical-300">升级至专业版</p>
-                  <p className="text-xs text-medical-600 dark:text-medical-400">解锁全部高级功能</p>
+              <div className="flex items-center gap-2 group">
+                <Sparkles className="h-5 w-5 text-blue-500 transition-transform duration-300 group-hover:scale-110 group-hover:text-blue-600" />
+                <div
+                  className={cn(
+                    "transition-all duration-300 ease-in-out",
+                    isAnimating && isCollapsed ? "opacity-0 translate-x-5" : "opacity-100 translate-x-0",
+                  )}
+                >
+                  <p className="text-sm font-medium text-blue-700 dark:text-blue-300 group-hover:text-blue-800">
+                    升级至专业版
+                  </p>
+                  <p className="text-xs text-blue-600 dark:text-blue-400">解锁全部高级功能</p>
                 </div>
               </div>
             )}
@@ -311,8 +428,16 @@ export function RoleBasedSidebar({ isCollapsed, setIsCollapsed, className }: Rol
 
         {/* 版本信息 */}
         {!isCollapsed && (
-          <div className="p-2 text-center">
-            <p className="text-xs text-muted-foreground">MediNexus³ v3.5.2</p>
+          <div
+            className={cn(
+              "p-2 text-center",
+              "transition-all duration-300 ease-in-out",
+              isAnimating ? "opacity-0" : "opacity-100",
+            )}
+          >
+            <p className="text-xs text-muted-foreground hover:text-blue-600 transition-colors duration-200 cursor-default">
+              MediNexus³ v3.5.2
+            </p>
           </div>
         )}
       </aside>

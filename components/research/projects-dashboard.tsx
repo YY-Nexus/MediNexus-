@@ -369,5 +369,5 @@ export function ResearchProjectsDashboard() {
   )
 }
 
-// 为了兼容性，将 ResearchProjectsDashboard 也导出为 ProjectsDashboard
+// 添加命名导出，将 ResearchProjectsDashboard 组件也导出为 ProjectsDashboard
 export const ProjectsDashboard = ResearchProjectsDashboard

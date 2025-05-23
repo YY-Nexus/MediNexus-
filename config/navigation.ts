@@ -39,6 +39,11 @@ import {
   Clock,
   AlertCircle,
   Bell,
+  Globe,
+  Code,
+  Monitor,
+  TestTube,
+  History,
 } from "lucide-react"
 
 export const navItems = [
@@ -174,6 +179,17 @@ export const navItems = [
       { title: "趋势报告", href: "/analytics/trends", icon: LineChart },
       { title: "分布分析", href: "/analytics/distribution", icon: PieChart },
       { title: "预测模型", href: "/analytics/prediction", icon: TrendingUp },
+    ],
+  },
+  {
+    title: "API文档",
+    icon: Globe,
+    children: [
+      { title: "API概览", href: "/api-docs", icon: BookOpen },
+      { title: "在线测试", href: "/api-docs/tester", icon: TestTube },
+      { title: "使用示例", href: "/api-docs/examples", icon: Code },
+      { title: "性能监控", href: "/api-docs/monitor", icon: Monitor },
+      { title: "更新日志", href: "/api-docs/changelog", icon: History },
     ],
   },
   {

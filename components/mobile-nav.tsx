@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion"
 
 export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false)
+  const [activeItem, setActiveItem] = useState<string | null>(null)
   const pathname = usePathname()
   const navRef = useRef<HTMLDivElement>(null)
   const touchStartX = useRef(0)
@@ -92,13 +93,24 @@ export function MobileNav() {
     }
   }, [isOpen])
 
+  // 处理导航项点击
+  const handleItemClick = (title: string) => {
+    setActiveItem(title)
+    setTimeout(() => setActiveItem(null), 300)
+  }
+
   return (
     <div className="md:hidden">
-      <div className="flex items-center justify-between p-4 border-b border-medical-100">
-        <Link href="/" className="flex items-center space-x-2">
+      <div className="flex items-center justify-between p-4 border-b border-blue-100">
+        <Link href="/" className="flex items-center space-x-2 transition-transform hover:scale-105">
           <Logo variant="compact" />
         </Link>
-        <MedicalButton variant="ghost" size="icon" onClick={toggleMenu}>
+        <MedicalButton
+          variant="ghost"
+          size="icon"
+          onClick={toggleMenu}
+          className="transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 active:scale-95"
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={isOpen ? "close" : "menu"}
@@ -132,7 +144,7 @@ export function MobileNav() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                 >
-                  <div className="font-medium text-lg text-medical-800 dark:text-medical-200">{item.title}</div>
+                  <div className="font-medium text-lg text-blue-800 dark:text-blue-200">{item.title}</div>
                   {item.children ? (
                     <div className="ml-4 space-y-1">
                       {item.children.map((child, childIndex) => (
@@ -144,13 +156,20 @@ export function MobileNav() {
                         >
                           <Link
                             href={child.href}
+                            onClick={() => handleItemClick(child.title)}
                             className={cn(
-                              "block py-2 text-medical-600 dark:text-medical-400 hover:text-medical-900 dark:hover:text-medical-100 transition-colors",
-                              pathname === child.href && "text-medical-900 dark:text-medical-100 font-medium",
+                              "block py-2 text-blue-600 dark:text-blue-400 group",
+                              "transition-all duration-200 ease-in-out",
+                              "hover:bg-blue-50 hover:text-blue-900 hover:pl-2 hover:rounded-md hover:shadow-sm",
+                              "active:bg-blue-100 active:scale-[0.98]",
+                              "dark:hover:text-blue-100 dark:hover:bg-blue-900/20",
+                              pathname === child.href &&
+                                "text-blue-900 dark:text-blue-100 font-medium bg-blue-50 dark:bg-blue-900/10 pl-2 rounded-md",
+                              activeItem === child.title && "animate-pulse bg-blue-50",
                             )}
                           >
                             <div className="flex items-center gap-2">
-                              <child.icon className="h-4 w-4" />
+                              <child.icon className="h-4 w-4 transition-transform group-hover:scale-110" />
                               <span>{child.title}</span>
                             </div>
                           </Link>
@@ -160,13 +179,20 @@ export function MobileNav() {
                   ) : (
                     <Link
                       href={item.href}
+                      onClick={() => handleItemClick(item.title)}
                       className={cn(
-                        "block py-2 text-medical-600 dark:text-medical-400 hover:text-medical-900 dark:hover:text-medical-100 transition-colors",
-                        pathname === item.href && "text-medical-900 dark:text-medical-100 font-medium",
+                        "block py-2 text-blue-600 dark:text-blue-400 group",
+                        "transition-all duration-200 ease-in-out",
+                        "hover:bg-blue-50 hover:text-blue-900 hover:pl-2 hover:rounded-md hover:shadow-sm",
+                        "active:bg-blue-100 active:scale-[0.98]",
+                        "dark:hover:text-blue-100 dark:hover:bg-blue-900/20",
+                        pathname === item.href &&
+                          "text-blue-900 dark:text-blue-100 font-medium bg-blue-50 dark:bg-blue-900/10 pl-2 rounded-md",
+                        activeItem === item.title && "animate-pulse bg-blue-50",
                       )}
                     >
                       <div className="flex items-center gap-2">
-                        <item.icon className="h-4 w-4" />
+                        <item.icon className="h-4 w-4 transition-transform group-hover:scale-110" />
                         <span>{item.title}</span>
                       </div>
                     </Link>

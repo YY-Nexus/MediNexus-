@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
+import { optimized, debounced, logged } from "./middleware/optimized-middleware"
 
 // 主题类型
 export type Theme = "light" | "dark" | "system"
@@ -42,32 +43,69 @@ const defaultSettings = {
   compactView: false,
 }
 
-// 创建设置存储
+// 创建设置存储 - 使用优化的中间件
 export const useSettingsStore = create<SettingsState>()(
-  persist(
-    (set) => ({
-      ...defaultSettings,
+  logged("Settings")(
+    debounced(300)(
+      optimized(
+        persist(
+          (set, get) => ({
+            ...defaultSettings,
 
-      setTheme: (theme) => set({ theme }),
+            setTheme: (theme) => {
+              // 只有当主题真正变化时才更新状态
+              if (get().theme !== theme) {
+                set({ theme })
+              }
+            },
 
-      setLanguage: (language) => set({ language }),
+            setLanguage: (language) => {
+              // 只有当语言真正变化时才更新状态
+              if (get().language !== language) {
+                set({ language })
+              }
+            },
 
-      setFontSize: (fontSize) => set({ fontSize }),
+            setFontSize: (fontSize) => {
+              // 只有当字体大小真正变化时才更新状态
+              if (get().fontSize !== fontSize) {
+                set({ fontSize })
+              }
+            },
 
-      toggleHighContrast: () => set((state) => ({ highContrast: !state.highContrast })),
+            toggleHighContrast: () => set((state) => ({ highContrast: !state.highContrast })),
 
-      toggleAnimations: () => set((state) => ({ animations: !state.animations })),
+            toggleAnimations: () => set((state) => ({ animations: !state.animations })),
 
-      toggleNotifications: () => set((state) => ({ notifications: !state.notifications })),
+            toggleNotifications: () => set((state) => ({ notifications: !state.notifications })),
 
-      toggleAutoSave: () => set((state) => ({ autoSave: !state.autoSave })),
+            toggleAutoSave: () => set((state) => ({ autoSave: !state.autoSave })),
 
-      toggleCompactView: () => set((state) => ({ compactView: !state.compactView })),
+            toggleCompactView: () => set((state) => ({ compactView: !state.compactView })),
 
-      resetSettings: () => set(defaultSettings),
-    }),
-    {
-      name: "medinexus-settings",
-    },
+            resetSettings: () => {
+              // 只有当设置与默认值不同时才重置
+              const currentSettings = get()
+              if (JSON.stringify(currentSettings) !== JSON.stringify(defaultSettings)) {
+                set(defaultSettings)
+              }
+            },
+          }),
+          {
+            name: "medinexus-settings",
+          },
+        ),
+      ),
+    ),
   ),
 )
+
+// 导出选择器，以便组件可以只订阅需要的状态部分
+export const useTheme = () => useSettingsStore((state) => state.theme)
+export const useLanguage = () => useSettingsStore((state) => state.language)
+export const useFontSize = () => useSettingsStore((state) => state.fontSize)
+export const useHighContrast = () => useSettingsStore((state) => state.highContrast)
+export const useAnimations = () => useSettingsStore((state) => state.animations)
+export const useNotifications = () => useSettingsStore((state) => state.notifications)
+export const useAutoSave = () => useSettingsStore((state) => state.autoSave)
+export const useCompactView = () => useSettingsStore((state) => state.compactView)

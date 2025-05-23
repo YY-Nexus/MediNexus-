@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
+import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from "react"
 import { i18nConfig, type Locale } from "@/lib/i18n/i18n-config"
 import { translations, type TranslationKey } from "@/i18n/translations"
 
@@ -29,49 +29,60 @@ export function EnhancedLanguageProvider({
 }: LanguageProviderProps) {
   const [locale, setLocale] = useState<Locale>(defaultLocale)
   const [isLoading, setIsLoading] = useState(true)
+  const initialSetupDone = useRef(false)
+  const isInitialMount = useRef(true)
 
-  // 从本地存储加载语言设置
+  // 从本地存储加载语言设置 - 只在组件挂载时执行一次
   useEffect(() => {
+    // 防止服务器端执行
+    if (typeof window === "undefined") return
+
     setIsLoading(true)
     try {
-      if (typeof window !== "undefined") {
-        const savedLocale = localStorage.getItem("preferred-locale")
-        if (savedLocale && i18nConfig.locales.includes(savedLocale as Locale)) {
-          setLocale(savedLocale as Locale)
-        } else {
-          // 尝试从浏览器语言设置中获取
-          const browserLocale = navigator.language
-          const matchedLocale = i18nConfig.locales.find((locale) => browserLocale.startsWith(locale.split("-")[0]))
-          if (matchedLocale) {
-            setLocale(matchedLocale)
-          }
+      const savedLocale = localStorage.getItem("preferred-locale")
+      if (savedLocale && i18nConfig.locales.includes(savedLocale as Locale)) {
+        setLocale(savedLocale as Locale)
+      } else {
+        // 尝试从浏览器语言设置中获取
+        const browserLocale = navigator.language
+        const matchedLocale = i18nConfig.locales.find((locale) => browserLocale.startsWith(locale.split("-")[0]))
+        if (matchedLocale) {
+          setLocale(matchedLocale)
         }
       }
     } catch (error) {
       console.error("Error loading language preference:", error)
     } finally {
       setIsLoading(false)
+      initialSetupDone.current = true
     }
-  }, [])
+  }, []) // 空依赖数组，确保只在挂载时执行一次
 
-  // 保存语言设置到本地存储
+  // 保存语言设置到本地存储 - 只在locale变化且初始化完成后执行
   useEffect(() => {
-    if (isLoading) return
+    // 跳过初始渲染和加载状态
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
+    }
+
+    if (isLoading || !initialSetupDone.current) return
 
     try {
       if (typeof window !== "undefined") {
         localStorage.setItem("preferred-locale", locale)
-        // 更新文档语言
-        document.documentElement.lang = locale
-        // 更新文档方向
-        document.documentElement.dir = getDirection(locale)
-        // 更新日期格式等
-        document.documentElement.setAttribute("data-locale", locale)
+
+        // 批量更新DOM属性以减少重绘
+        requestAnimationFrame(() => {
+          document.documentElement.lang = locale
+          document.documentElement.dir = getDirection(locale)
+          document.documentElement.setAttribute("data-locale", locale)
+        })
       }
     } catch (error) {
       console.error("Error saving language preference:", error)
     }
-  }, [locale, isLoading])
+  }, [locale, isLoading]) // 只依赖locale和isLoading
 
   // 获取文本方向
   const getDirection = (locale: Locale): "ltr" | "rtl" => {
@@ -120,23 +131,20 @@ export function EnhancedLanguageProvider({
     return i18nConfig.localeNames[locale] || locale
   }
 
-  return (
-    <LanguageContext.Provider
-      value={{
-        locale,
-        setLocale,
-        t,
-        formatDate,
-        formatNumber,
-        availableLocales: i18nConfig.locales,
-        localeName,
-        dir: getDirection(locale),
-        isLoading,
-      }}
-    >
-      {children}
-    </LanguageContext.Provider>
-  )
+  // 使用useMemo缓存context值，避免不必要的重新渲染
+  const contextValue = {
+    locale,
+    setLocale,
+    t,
+    formatDate,
+    formatNumber,
+    availableLocales: i18nConfig.locales,
+    localeName,
+    dir: getDirection(locale),
+    isLoading,
+  }
+
+  return <LanguageContext.Provider value={contextValue}>{children}</LanguageContext.Provider>
 }
 
 export function useEnhancedLanguage() {
