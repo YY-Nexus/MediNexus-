@@ -1,7 +1,6 @@
 "use client"
 
-import type React from "react"
-
+import React from "react"
 import { useEffect, useState } from "react"
 
 // 性能指标类型
@@ -250,9 +249,9 @@ class PerformanceMonitoringService {
 
     // 收集自定义指标
     this.config.customMetrics.forEach((metricName) => {
-      if (typeof window[metricName as keyof Window] === "function") {
+      if (typeof window !== "undefined" && typeof (window as any)[metricName] === "function") {
         try {
-          const value = (window[metricName as keyof Window] as Function)()
+          const value = (window as any)[metricName]()
           if (typeof value === "number") {
             this.addMetric(`自定义-${metricName}`, value)
           }
@@ -431,7 +430,7 @@ export function markUserInteraction(name: string) {
 
 // 用于测量组件渲染时间的HOC
 export function withPerformanceTracking<P extends object>(Component: React.ComponentType<P>, componentName: string) {
-  return function PerformanceTrackedComponent(props: P) {
+  const PerformanceTrackedComponent = (props: P) => {
     useEffect(() => {
       const endMark = markUserInteraction(`${componentName}渲染`)
       return () => {
@@ -439,6 +438,10 @@ export function withPerformanceTracking<P extends object>(Component: React.Compo
       }
     }, [])
 
-    return <Component {...props} />
+    return React.createElement(Component, props)
   }
+
+  PerformanceTrackedComponent.displayName = `withPerformanceTracking(${Component.displayName || Component.name})`
+
+  return PerformanceTrackedComponent
 }

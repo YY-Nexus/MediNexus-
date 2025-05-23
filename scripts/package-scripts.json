@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "build:check": "node -r ts-node/register scripts/quick-build-check.ts",
+    "build:verify": "node -r ts-node/register scripts/build-verification.ts",
+    "build:clean": "rm -rf .next && npm run build",
+    "type:check": "tsc --noEmit --skipLibCheck",
+    "lint:check": "eslint . --ext .ts,.tsx",
+    "pre:build": "npm run type:check && npm run lint:check"
+  }
+}
