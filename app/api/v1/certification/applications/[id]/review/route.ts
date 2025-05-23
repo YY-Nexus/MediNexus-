@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 
 // 模拟认证申请数据库 - 实际项目中应从数据库获取
 const applications = [
@@ -46,10 +46,10 @@ const applications = [
   },
 ]
 
-// 审核认证申请
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+// 审核认证申请 - 修复 Next.js 15 的类型错误
+export async function POST(request: NextRequest, context: { params: { id: string } }) {
   try {
-    const id = params.id
+    const { id } = context.params
     const body = await request.json()
     const { status, comments } = body
 

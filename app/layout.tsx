@@ -5,6 +5,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AppShell } from "@/components/layout/app-shell"
 import RootLayoutClient from "./RootLayoutClient"
+import { ClientErrorDetector } from "@/components/debug/client-error-detector"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -25,6 +26,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <AppShell>
             <RootLayoutClient>{children}</RootLayoutClient>
+            {process.env.NODE_ENV === "development" && <ClientErrorDetector />}
           </AppShell>
         </ThemeProvider>
       </body>
