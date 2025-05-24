@@ -2,9 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['localhost', 'placeholder.com'],
-    unoptimized: true,
+    domains: ['placeholder.com', 'api.yanyu.com'],
   },
+  // 移除 swcMinify 配置，因为在 Next.js 15 中已不再需要
+  // swcMinify: true,
   eslint: {
     ignoreDuringBuilds: true,
   },

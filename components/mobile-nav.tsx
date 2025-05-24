@@ -23,7 +23,7 @@ export function MobileNav() {
     setIsOpen(false)
   }, [pathname])
 
-  // 添加滑动手势支持
+  // 添加滑动手势支持 - 优化版本
   useEffect(() => {
     const handleTouchStart = (e: TouchEvent) => {
       touchStartX.current = e.touches[0].clientX
@@ -34,13 +34,15 @@ export function MobileNav() {
     }
 
     const handleTouchEnd = () => {
+      const swipeDistance = touchEndX.current - touchStartX.current
+
       // 从左向右滑动打开菜单（当菜单关闭时）
-      if (!isOpen && touchEndX.current - touchStartX.current > 100) {
+      if (!isOpen && swipeDistance > 100) {
         setIsOpen(true)
       }
 
       // 从右向左滑动关闭菜单（当菜单打开时）
-      if (isOpen && touchStartX.current - touchEndX.current > 100) {
+      if (isOpen && swipeDistance < -100) {
         setIsOpen(false)
       }
 
@@ -49,12 +51,11 @@ export function MobileNav() {
       touchEndX.current = 0
     }
 
-    // 添加事件监听器
+    // 使用事件委托减少事件监听器数量
     document.addEventListener("touchstart", handleTouchStart)
     document.addEventListener("touchmove", handleTouchMove)
     document.addEventListener("touchend", handleTouchEnd)
 
-    // 清理事件监听器
     return () => {
       document.removeEventListener("touchstart", handleTouchStart)
       document.removeEventListener("touchmove", handleTouchMove)
