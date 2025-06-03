@@ -120,6 +120,30 @@ export function MedicationInventory() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">智能补货建议</CardTitle>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              className="h-4 w-4 text-muted-foreground"
+            >
+              <path d="M9 12l2 2 4-4" />
+              <path d="M21 12c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z" />
+              <path d="M3 12c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z" />
+            </svg>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">5</div>
+            <p className="text-xs text-muted-foreground">基于AI预测的补货建议</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">低库存预警</CardTitle>
             <TrendingDown className="h-4 w-4 text-destructive" />
           </CardHeader>
@@ -188,6 +212,42 @@ export function MedicationInventory() {
                   </BarChart>
                 </ResponsiveContainer>
               </ChartContainer>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>智能库存预警</CardTitle>
+              <CardDescription>基于历史数据和AI算法的智能预警</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-md">
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-red-800">紧急补货预警</p>
+                    <p className="text-sm text-red-600">胰岛素预计3天内库存不足</p>
+                  </div>
+                  <Badge variant="destructive">紧急</Badge>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-yellow-800">效期预警</p>
+                    <p className="text-sm text-yellow-600">阿莫西林胶囊将在15天内到期</p>
+                  </div>
+                  <Badge variant="outline" className="border-yellow-500 text-yellow-700">
+                    注意
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-md">
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-blue-800">补货建议</p>
+                    <p className="text-sm text-blue-600">建议增加感冒药库存，预测需求上升</p>
+                  </div>
+                  <Badge variant="outline" className="border-blue-500 text-blue-700">
+                    建议
+                  </Badge>
+                </div>
+              </div>
             </CardContent>
           </Card>
 

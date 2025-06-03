@@ -16,9 +16,14 @@ import {
   Download,
   Filter,
 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
 
 export function VitalSigns() {
   const [timeRange, setTimeRange] = useState("week")
+  const [isRealTimeMonitoring, setIsRealTimeMonitoring] = useState(false)
+  const [alertLevel, setAlertLevel] = useState<"normal" | "warning" | "critical">("normal")
+  const [lastUpdate, setLastUpdate] = useState(new Date())
 
   return (
     <div className="space-y-6">
@@ -86,9 +91,43 @@ export function VitalSigns() {
                 <CardTitle className="text-sm font-medium text-muted-foreground">血压</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-baseline justify-between">
+                <div className="mb-6 p-4 bg-slate-50 rounded-lg">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-medium">实时监测</h3>
+                    <Button
+                      variant={isRealTimeMonitoring ? "destructive" : "default"}
+                      size="sm"
+                      onClick={() => setIsRealTimeMonitoring(!isRealTimeMonitoring)}
+                    >
+                      {isRealTimeMonitoring ? "停止监测" : "开始监测"}
+                    </Button>
+                  </div>
+                  {isRealTimeMonitoring && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>监测状态</span>
+                        <span className="text-green-600">活跃</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>最后更新</span>
+                        <span>{lastUpdate.toLocaleTimeString()}</span>
+                      </div>
+                      <Progress value={85} className="h-2" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center justify-between">
                   <div className="text-2xl font-bold">120/80</div>
-                  <div className="text-xs text-green-600">正常</div>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant={
+                        alertLevel === "normal" ? "default" : alertLevel === "warning" ? "secondary" : "destructive"
+                      }
+                    >
+                      {alertLevel === "normal" ? "正常" : alertLevel === "warning" ? "注意" : "异常"}
+                    </Badge>
+                    {isRealTimeMonitoring && <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />}
+                  </div>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">最近测量: 今天 08:30</p>
               </CardContent>
@@ -99,11 +138,45 @@ export function VitalSigns() {
                 <CardTitle className="text-sm font-medium text-muted-foreground">心率</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-baseline justify-between">
+                <div className="mb-6 p-4 bg-slate-50 rounded-lg">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-medium">实时监测</h3>
+                    <Button
+                      variant={isRealTimeMonitoring ? "destructive" : "default"}
+                      size="sm"
+                      onClick={() => setIsRealTimeMonitoring(!isRealTimeMonitoring)}
+                    >
+                      {isRealTimeMonitoring ? "停止监测" : "开始监测"}
+                    </Button>
+                  </div>
+                  {isRealTimeMonitoring && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>监测状态</span>
+                        <span className="text-green-600">活跃</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>最后更新</span>
+                        <span>{lastUpdate.toLocaleTimeString()}</span>
+                      </div>
+                      <Progress value={85} className="h-2" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center justify-between">
                   <div className="text-2xl font-bold">
                     72 <span className="text-sm font-normal">bpm</span>
                   </div>
-                  <div className="text-xs text-green-600">正常</div>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant={
+                        alertLevel === "normal" ? "default" : alertLevel === "warning" ? "secondary" : "destructive"
+                      }
+                    >
+                      {alertLevel === "normal" ? "正常" : alertLevel === "warning" ? "注意" : "异常"}
+                    </Badge>
+                    {isRealTimeMonitoring && <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />}
+                  </div>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">最近测量: 今天 08:30</p>
               </CardContent>
@@ -114,11 +187,45 @@ export function VitalSigns() {
                 <CardTitle className="text-sm font-medium text-muted-foreground">体温</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-baseline justify-between">
+                <div className="mb-6 p-4 bg-slate-50 rounded-lg">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-medium">实时监测</h3>
+                    <Button
+                      variant={isRealTimeMonitoring ? "destructive" : "default"}
+                      size="sm"
+                      onClick={() => setIsRealTimeMonitoring(!isRealTimeMonitoring)}
+                    >
+                      {isRealTimeMonitoring ? "停止监测" : "开始监测"}
+                    </Button>
+                  </div>
+                  {isRealTimeMonitoring && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>监测状态</span>
+                        <span className="text-green-600">活跃</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>最后更新</span>
+                        <span>{lastUpdate.toLocaleTimeString()}</span>
+                      </div>
+                      <Progress value={85} className="h-2" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center justify-between">
                   <div className="text-2xl font-bold">
                     36.5 <span className="text-sm font-normal">°C</span>
                   </div>
-                  <div className="text-xs text-green-600">正常</div>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant={
+                        alertLevel === "normal" ? "default" : alertLevel === "warning" ? "secondary" : "destructive"
+                      }
+                    >
+                      {alertLevel === "normal" ? "正常" : alertLevel === "warning" ? "注意" : "异常"}
+                    </Badge>
+                    {isRealTimeMonitoring && <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />}
+                  </div>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">最近测量: 今天 08:30</p>
               </CardContent>
@@ -129,11 +236,45 @@ export function VitalSigns() {
                 <CardTitle className="text-sm font-medium text-muted-foreground">呼吸频率</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-baseline justify-between">
+                <div className="mb-6 p-4 bg-slate-50 rounded-lg">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-medium">实时监测</h3>
+                    <Button
+                      variant={isRealTimeMonitoring ? "destructive" : "default"}
+                      size="sm"
+                      onClick={() => setIsRealTimeMonitoring(!isRealTimeMonitoring)}
+                    >
+                      {isRealTimeMonitoring ? "停止监测" : "开始监测"}
+                    </Button>
+                  </div>
+                  {isRealTimeMonitoring && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>监测状态</span>
+                        <span className="text-green-600">活跃</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>最后更新</span>
+                        <span>{lastUpdate.toLocaleTimeString()}</span>
+                      </div>
+                      <Progress value={85} className="h-2" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center justify-between">
                   <div className="text-2xl font-bold">
                     16 <span className="text-sm font-normal">次/分</span>
                   </div>
-                  <div className="text-xs text-green-600">正常</div>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant={
+                        alertLevel === "normal" ? "default" : alertLevel === "warning" ? "secondary" : "destructive"
+                      }
+                    >
+                      {alertLevel === "normal" ? "正常" : alertLevel === "warning" ? "注意" : "异常"}
+                    </Badge>
+                    {isRealTimeMonitoring && <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />}
+                  </div>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">最近测量: 今天 08:30</p>
               </CardContent>

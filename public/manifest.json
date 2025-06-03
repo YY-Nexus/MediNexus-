@@ -1,14 +1,14 @@
 {
-  "name": "言语云³ 智能医疗系统",
-  "short_name": "言语云³",
-  "description": "智能医疗 · 云端守护",
+  "name": "言语「医枢」智能诊疗系统",
+  "short_name": "医枢",
+  "description": "YanYu MediCore Intelligent Diagnostic System - 智能医疗诊断系统",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#3b82f6",
   "theme_color": "#3b82f6",
   "icons": [
     {
-      "src": "/yanyu-cloud-logo.png",
+      "src": "/yanyu-medicore-logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

@@ -24,12 +24,10 @@ export function LoginForm() {
     clearError()
 
     try {
-      const success = await login(email, password)
-      if (success) {
-        router.push(returnUrl)
-      }
+      await login(email, password)
+      router.push(returnUrl)
     } catch (err) {
-      // 错误已在store中处理，无需在此处理
+      // 错误已在store中处理
     }
   }
 
@@ -55,7 +53,6 @@ export function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="your.email@example.com"
-            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
             required
             disabled={isLoading}
           />

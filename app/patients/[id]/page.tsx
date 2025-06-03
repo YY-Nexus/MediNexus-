@@ -1,52 +1,44 @@
-import { Suspense } from "react"
-import { LoadingSpinner } from "@/components/ui/loading-spinner"
-import { PatientDetails } from "@/components/patients/patient-details"
-import { MedicalButton } from "@/components/ui/medical-button"
-import { ChevronLeft, Edit, MessageSquare, Printer, Share } from "lucide-react"
-import Link from "next/link"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import PatientRiskAssessment from "@/components/patients/patient-risk-assessment"
+import PatientEducationMaterials from "@/components/patients/patient-education-materials"
 
-export default function PatientDetailsPage({ params }: { params: { id: string } }) {
+interface Props {
+  params: { id: string }
+}
+
+const PatientDetailPage = ({ params }: Props) => {
   return (
-    <div className="container mx-auto py-6 px-4 md:px-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-        <div className="flex items-center gap-2">
-          <Link href="/patients">
-            <MedicalButton variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <ChevronLeft className="h-4 w-4" />
-            </MedicalButton>
-          </Link>
-          <h1 className="text-2xl md:text-3xl font-bold text-medical-800">患者详情</h1>
-        </div>
-
-        <div className="flex items-center gap-2 mt-4 md:mt-0">
-          <MedicalButton variant="outline" size="sm" className="text-medical-700">
-            <Printer className="mr-1 h-4 w-4" />
-            打印
-          </MedicalButton>
-          <MedicalButton variant="outline" size="sm" className="text-medical-700">
-            <Share className="mr-1 h-4 w-4" />
-            分享
-          </MedicalButton>
-          <MedicalButton variant="outline" size="sm" className="text-medical-700">
-            <MessageSquare className="mr-1 h-4 w-4" />
-            发送消息
-          </MedicalButton>
-          <MedicalButton size="sm" className="bg-medical-gradient text-white">
-            <Edit className="mr-1 h-4 w-4" />
-            编辑
-          </MedicalButton>
-        </div>
-      </div>
-
-      <Suspense
-        fallback={
-          <div className="p-8 flex justify-center">
-            <LoadingSpinner />
-          </div>
-        }
-      >
-        <PatientDetails patientId={params.id} />
-      </Suspense>
+    <div>
+      <Tabs defaultValue="overview" className="w-[400px]">
+        <TabsList className="grid w-full grid-cols-6">
+          <TabsTrigger value="overview">概览</TabsTrigger>
+          <TabsTrigger value="records">病历</TabsTrigger>
+          <TabsTrigger value="risk">风险评估</TabsTrigger>
+          <TabsTrigger value="education">教育材料</TabsTrigger>
+          <TabsTrigger value="treatment">治疗</TabsTrigger>
+          <TabsTrigger value="history">历史</TabsTrigger>
+        </TabsList>
+        <TabsContent value="overview" className="space-y-6">
+          概览内容
+        </TabsContent>
+        <TabsContent value="records" className="space-y-6">
+          病历内容
+        </TabsContent>
+        <TabsContent value="risk" className="space-y-6">
+          <PatientRiskAssessment patientId={params.id} />
+        </TabsContent>
+        <TabsContent value="education" className="space-y-6">
+          <PatientEducationMaterials patientId={params.id} />
+        </TabsContent>
+        <TabsContent value="treatment" className="space-y-6">
+          治疗内容
+        </TabsContent>
+        <TabsContent value="history" className="space-y-6">
+          历史内容
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
+
+export default PatientDetailPage

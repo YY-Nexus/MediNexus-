@@ -10,6 +10,7 @@ import { DiagnosisComparison } from "./diagnosis-comparison"
 import Link from "next/link"
 import { FileText, Brain, Activity, BarChart } from "lucide-react"
 import { Card } from "@/components/ui/card"
+import { EnhancedMultiModalFusion } from "./enhanced-multi-modal-fusion"
 
 export function AIDiagnosisClient() {
   const [activeTab, setActiveTab] = useState("new-diagnosis")
@@ -24,11 +25,12 @@ export function AIDiagnosisClient() {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="new-diagnosis" className="w-full" value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-4 mb-8">
+        <TabsList className="grid grid-cols-5 mb-8">
           <TabsTrigger value="new-diagnosis">新建诊断</TabsTrigger>
           <TabsTrigger value="history">诊断历史</TabsTrigger>
           <TabsTrigger value="explainer">诊断解释器</TabsTrigger>
           <TabsTrigger value="comparison">诊断比较</TabsTrigger>
+          <TabsTrigger value="multi-modal">多模态融合</TabsTrigger>
         </TabsList>
 
         <TabsContent value="new-diagnosis" className="space-y-4">
@@ -45,6 +47,10 @@ export function AIDiagnosisClient() {
 
         <TabsContent value="comparison" className="space-y-4">
           <DiagnosisComparison />
+        </TabsContent>
+
+        <TabsContent value="multi-modal" className="space-y-4">
+          <EnhancedMultiModalFusion />
         </TabsContent>
       </Tabs>
 

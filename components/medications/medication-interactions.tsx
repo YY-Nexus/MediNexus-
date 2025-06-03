@@ -13,6 +13,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Progress } from "@/components/ui/progress"
 
 export function MedicationInteractions() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -48,6 +49,12 @@ export function MedicationInteractions() {
     if (selectedMedications.length < 2) return
     const results = medicationInteractionService.checkInteractionsAmongMultiple(selectedMedications)
     setInteractions(results)
+  }
+
+  // 批量检查多个患者的药物相互作用
+  const batchCheckInteractions = () => {
+    // 模拟批量检查逻辑
+    console.log("执行批量药物相互作用检查")
   }
 
   // 查看相互作用详情
@@ -250,6 +257,34 @@ export function MedicationInteractions() {
                         <AlertDescription>所选药物之间未发现已知的相互作用</AlertDescription>
                       </Alert>
                     )}
+                  </div>
+                )}
+                {interactions.length > 0 && (
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">整体风险评估</span>
+                      <span className="text-sm text-muted-foreground">
+                        {interactions.filter(
+                          (i) => i.interaction.severity === "严重" || i.interaction.severity === "禁忌",
+                        ).length > 0
+                          ? "高风险"
+                          : interactions.filter((i) => i.interaction.severity === "中度").length > 0
+                            ? "中等风险"
+                            : "低风险"}
+                      </span>
+                    </div>
+                    <Progress
+                      value={
+                        interactions.filter(
+                          (i) => i.interaction.severity === "严重" || i.interaction.severity === "禁忌",
+                        ).length > 0
+                          ? 85
+                          : interactions.filter((i) => i.interaction.severity === "中度").length > 0
+                            ? 60
+                            : 25
+                      }
+                      className="h-2"
+                    />
                   </div>
                 )}
               </div>

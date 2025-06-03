@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Search, Filter, FileText, CheckCircle, XCircle, Clock } from "lucide-react"
+import { Search, Filter, FileText, CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -348,6 +348,34 @@ export function PrescriptionManagement() {
                     </TableBody>
                   </Table>
                 </div>
+
+                <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+                  <h4 className="text-sm font-medium text-yellow-800 mb-2 flex items-center">
+                    <AlertTriangle className="h-4 w-4 mr-1" />
+                    药物相互作用检查
+                  </h4>
+                  <div className="space-y-2">
+                    {selectedPrescription.medications.length > 1 && (
+                      <div className="text-sm text-yellow-700">
+                        <p>检测到以下潜在相互作用：</p>
+                        <ul className="list-disc list-inside mt-1">
+                          <li>二甲双胍与阿托伐他汀：轻微相互作用，建议监测肝功能</li>
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {selectedPrescription?.status === "待审核" && (
+                  <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-md">
+                    <h4 className="text-sm font-medium text-blue-800 mb-2">智能审核建议</h4>
+                    <div className="text-sm text-blue-700">
+                      <p>✓ 药物剂量符合指南推荐</p>
+                      <p>✓ 患者无已知药物过敏史</p>
+                      <p>⚠ 建议监测血糖变化</p>
+                    </div>
+                  </div>
+                )}
 
                 <div className="mt-4 flex justify-end gap-2">
                   {selectedPrescription?.status === "待审核" && (

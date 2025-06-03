@@ -393,6 +393,7 @@ export function DiagnosisBatch() {
                                 {batch.status === "processing" && (
                                   <Progress
                                     value={(batch.processedFiles / batch.totalFiles) * 100}
+                                    variant="info"
                                     className="h-2 mt-2"
                                   />
                                 )}
@@ -520,7 +521,11 @@ export function DiagnosisBatch() {
 
                                 {batch.status === "processing" && (
                                   <div className="pt-1">
-                                    <Progress value={(batch.processedFiles / batch.totalFiles) * 100} className="h-2" />
+                                    <Progress
+                                      value={(batch.processedFiles / batch.totalFiles) * 100}
+                                      variant="info"
+                                      className="h-2"
+                                    />
                                     <div className="text-xs text-center mt-1 text-muted-foreground">
                                       {Math.round((batch.processedFiles / batch.totalFiles) * 100)}% 完成
                                     </div>
@@ -678,7 +683,7 @@ export function DiagnosisBatch() {
                   <span>上传进度</span>
                   <span>{uploadProgress}%</span>
                 </div>
-                <Progress value={uploadProgress} className="h-2" />
+                <Progress value={uploadProgress} variant="info" className="h-2" />
               </div>
             )}
           </div>

@@ -4,7 +4,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { BarChart2, LineChart, PieChart, Activity, Calendar, Download, Filter, Share2 } from "lucide-react"
+import {
+  BarChart2,
+  LineChart,
+  PieChart,
+  Activity,
+  Calendar,
+  Download,
+  Filter,
+  Share2,
+  TrendingUp,
+  CheckCircle,
+  AlertTriangle,
+} from "lucide-react"
+import { Progress } from "@/components/ui/progress"
 
 export function TrendsAnalysis() {
   return (
@@ -58,6 +71,10 @@ export function TrendsAnalysis() {
           <TabsTrigger value="correlation" className="flex items-center gap-1">
             <PieChart className="h-4 w-4" />
             <span>相关性分析</span>
+          </TabsTrigger>
+          <TabsTrigger value="prediction" className="flex items-center gap-1">
+            <TrendingUp className="h-4 w-4" />
+            <span>预测分析</span>
           </TabsTrigger>
         </TabsList>
 
@@ -252,6 +269,79 @@ export function TrendsAnalysis() {
                     此处将显示患者不同健康指标之间的相关性分析，帮助发现潜在的健康问题和风险因素。
                   </p>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="prediction" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>健康趋势预测</CardTitle>
+              <CardDescription>基于AI算法的健康状况预测分析</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-4">
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg">风险预测</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span>心血管疾病风险</span>
+                        <div className="flex items-center gap-2">
+                          <Progress value={25} className="w-20 h-2" />
+                          <span className="text-sm text-green-600">低风险</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span>糖尿病风险</span>
+                        <div className="flex items-center gap-2">
+                          <Progress value={45} className="w-20 h-2" />
+                          <span className="text-sm text-amber-600">中等风险</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span>高血压风险</span>
+                        <div className="flex items-center gap-2">
+                          <Progress value={15} className="w-20 h-2" />
+                          <span className="text-sm text-green-600">低风险</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg">健康建议</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5" />
+                        <div className="text-sm">
+                          <div className="font-medium">保持当前运动习惯</div>
+                          <div className="text-muted-foreground">您的运动量符合健康标准</div>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <AlertTriangle className="h-4 w-4 text-amber-500 mt-0.5" />
+                        <div className="text-sm">
+                          <div className="font-medium">注意血糖控制</div>
+                          <div className="text-muted-foreground">建议减少糖分摄入，定期监测</div>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5" />
+                        <div className="text-sm">
+                          <div className="font-medium">睡眠质量良好</div>
+                          <div className="text-muted-foreground">继续保持规律作息</div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </CardContent>
           </Card>

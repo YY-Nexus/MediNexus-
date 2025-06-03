@@ -15,6 +15,15 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // 新增蓝白双色立体按钮变体
+        "medical-blue":
+          "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 border-b-4 border-blue-800 hover:border-blue-900 active:border-blue-800",
+        "medical-white":
+          "bg-white text-blue-600 hover:bg-blue-50 active:bg-blue-100 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 border-2 border-blue-600 hover:border-blue-700 active:border-blue-800 border-b-4 border-b-blue-600 hover:border-b-blue-700",
+        "medical-outline":
+          "border-2 border-blue-600 bg-transparent text-blue-600 hover:bg-blue-600 hover:text-white active:bg-blue-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200",
+        "medical-gradient":
+          "bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 active:from-blue-800 active:to-blue-900 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 border-b-4 border-blue-800",
       },
       size: {
         default: "h-10 px-4 py-2",

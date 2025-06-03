@@ -2,44 +2,25 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
-import { usePathname } from "next/navigation"
-import { NavigationSearch } from "@/components/navigation-search"
+import { useEffect } from "react"
+import { GlobalErrorBoundary } from "@/components/error-boundary/global-error-boundary"
 
-export default function RootLayoutClient({ children }: { children: React.ReactNode }) {
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const pathname = usePathname()
+interface RootLayoutClientProps {
+  children: React.ReactNode
+}
 
-  // 监听全局键盘快捷键
+export function RootLayoutClient({ children }: RootLayoutClientProps) {
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // 全局搜索快捷键 (Cmd/Ctrl + K)
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault()
-        setIsSearchOpen(true)
+    // 确保只有一个导航实例
+    const existingNavs = document.querySelectorAll('[data-navigation="true"]')
+    if (existingNavs.length > 1) {
+      console.warn("检测到多个导航组件，正在清理...")
+      // 移除多余的导航组件
+      for (let i = 1; i < existingNavs.length; i++) {
+        existingNavs[i].remove()
       }
     }
-
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
   }, [])
 
-  // 路径变化时关闭搜索
-  useEffect(() => {
-    setIsSearchOpen(false)
-  }, [pathname])
-
-  return (
-    <>
-      {children}
-      {/* 全局搜索对话框 */}
-      {isSearchOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-full max-w-2xl">
-            <NavigationSearch />
-          </div>
-        </div>
-      )}
-    </>
-  )
+  return <GlobalErrorBoundary>{children}</GlobalErrorBoundary>
 }

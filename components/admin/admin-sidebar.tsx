@@ -1,151 +1,139 @@
 "use client"
-import Link from "next/link"
+import { useState } from "react"
 import { usePathname } from "next/navigation"
+import Link from "next/link"
 import { cn } from "@/lib/utils"
 import {
+  LayoutDashboard,
   Users,
   Settings,
-  Shield,
-  Database,
+  CheckCircle,
   BarChart3,
-  FileText,
-  AlertTriangle,
-  Server,
-  Layers,
-  UserCog,
-  BadgeCheck,
-  Key,
-  Globe,
-  Cpu,
-  MessageSquare,
-  Bell,
-  HardDrive,
-  Clock,
+  Shield,
+  ChevronLeft,
+  ChevronRight,
+  Palette,
+  Heart,
+  Activity,
 } from "lucide-react"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { ShieldLogo } from "@/components/brand/shield-logo"
+
+interface AdminSidebarProps {
+  className?: string
+}
 
 const adminNavItems = [
   {
-    title: "概览",
+    title: "管理概览",
     href: "/admin",
+    icon: LayoutDashboard,
+    description: "系统管理总览",
+  },
+  {
+    title: "管理仪表板",
+    href: "/admin/dashboard",
+    icon: Activity,
+    description: "实用管理控制面板",
+  },
+  {
+    title: "系统健康",
+    href: "/admin/system-health",
+    icon: CheckCircle,
+    description: "技术债务清理状态",
+  },
+  {
+    title: "数据分析",
+    href: "/admin/analytics",
     icon: BarChart3,
+    description: "信息密度优化展示",
+  },
+  {
+    title: "设计系统",
+    href: "/admin/design-system",
+    icon: Palette,
+    description: "视觉设计统一规范",
+  },
+  {
+    title: "医疗标准",
+    href: "/admin/medical-standards",
+    icon: Heart,
+    description: "医疗行业特色功能",
   },
   {
     title: "用户管理",
     href: "/admin/users",
     icon: Users,
+    description: "用户账户管理",
   },
   {
-    title: "角色与权限",
+    title: "角色权限",
     href: "/admin/roles",
     icon: Shield,
-  },
-  {
-    title: "资质审核",
-    href: "/admin/certifications",
-    icon: BadgeCheck,
-  },
-  {
-    title: "API配置",
-    href: "/admin/api-config",
-    icon: Key,
-  },
-  {
-    title: "数据管理",
-    href: "/admin/data",
-    icon: Database,
-  },
-  {
-    title: "系统日志",
-    href: "/admin/logs",
-    icon: FileText,
-  },
-  {
-    title: "告警中心",
-    href: "/admin/alerts",
-    icon: AlertTriangle,
+    description: "角色和权限管理",
   },
   {
     title: "系统设置",
     href: "/admin/settings",
     icon: Settings,
-  },
-  {
-    title: "服务器监控",
-    href: "/admin/servers",
-    icon: Server,
-  },
-  {
-    title: "备份与恢复",
-    href: "/admin/backup",
-    icon: HardDrive,
-  },
-  {
-    title: "计划任务",
-    href: "/admin/tasks",
-    icon: Clock,
-  },
-  {
-    title: "集成管理",
-    href: "/admin/integrations",
-    icon: Layers,
-  },
-  {
-    title: "管理员设置",
-    href: "/admin/admins",
-    icon: UserCog,
-  },
-  {
-    title: "AI模型管理",
-    href: "/admin/ai-models",
-    icon: Cpu,
-  },
-  {
-    title: "国际化设置",
-    href: "/admin/localization",
-    icon: Globe,
-  },
-  {
-    title: "消息模板",
-    href: "/admin/message-templates",
-    icon: MessageSquare,
-  },
-  {
-    title: "通知设置",
-    href: "/admin/notifications",
-    icon: Bell,
+    description: "系统配置设置",
   },
 ]
 
-export function AdminSidebar() {
+export function AdminSidebar({ className }: AdminSidebarProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false)
   const pathname = usePathname()
 
   return (
-    <div className="hidden border-r bg-white lg:block w-64">
-      <div className="flex h-16 items-center border-b px-4">
-        <Link href="/admin" className="flex items-center gap-2">
-          <ShieldLogo size="sm" showText={false} />
-          <span className="font-bold text-lg">管理平台</span>
-        </Link>
+    <div className={cn("flex h-full w-64 flex-col border-r bg-background", isCollapsed && "w-16", className)}>
+      {/* 侧边栏头部 */}
+      <div className="flex h-16 items-center justify-between border-b px-4">
+        {!isCollapsed && <h2 className="text-lg font-semibold text-blue-800">系统管理</h2>}
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="rounded-md p-2 hover:bg-gray-100 transition-colors"
+          aria-label={isCollapsed ? "展开侧边栏" : "收起侧边栏"}
+        >
+          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        </button>
       </div>
-      <ScrollArea className="h-[calc(100vh-4rem)] py-2">
-        <nav className="grid gap-1 px-2">
-          {adminNavItems.map((item) => (
+
+      {/* 导航菜单 */}
+      <nav className="flex-1 space-y-1 p-2 overflow-y-auto">
+        {adminNavItems.map((item) => {
+          const Icon = item.icon
+          const isActive = pathname === item.href
+
+          return (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-gray-100",
-                pathname === item.href ? "bg-gray-100" : "text-gray-500 hover:text-gray-900",
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                "hover:bg-blue-50 hover:text-blue-700",
+                isActive ? "bg-blue-100 text-blue-800" : "text-blue-600",
+                isCollapsed && "justify-center px-2",
               )}
+              title={isCollapsed ? item.title : undefined}
             >
-              <item.icon className="h-4 w-4" />
-              <span>{item.title}</span>
+              <Icon className="h-4 w-4 flex-shrink-0" />
+              {!isCollapsed && <span>{item.title}</span>}
             </Link>
-          ))}
-        </nav>
-      </ScrollArea>
+          )
+        })}
+      </nav>
+
+      {/* 侧边栏底部 */}
+      {!isCollapsed && (
+        <div className="border-t p-4">
+          <div className="text-xs text-blue-500">
+            <p>言语云³ 管理平台</p>
+            <p className="mt-1 text-blue-400">v3.5.2</p>
+            <p className="mt-2 text-blue-600 italic text-[10px]">"技术服务医疗，智慧守护健康"</p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
+
+// 默认导出
+export { AdminSidebar as default }

@@ -16,6 +16,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Clock, RefreshCw } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { useAuth } from "@/hooks/useAuth"
+import { Progress } from "@/components/ui/progress"
 
 export function DeploymentCheckClient() {
   const [activeTab, setActiveTab] = useState("system")
@@ -386,6 +387,7 @@ export function DeploymentCheckClient() {
                 </div>
               )}
             </div>
+            {overallStatus === "running" && <Progress variant="info" className="h-2 mt-2" />}
             <MedicalButton onClick={runFullCheck} disabled={isRunningCheck} className="w-32">
               {isRunningCheck ? (
                 <>

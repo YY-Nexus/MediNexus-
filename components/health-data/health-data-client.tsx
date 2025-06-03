@@ -4,12 +4,15 @@ import { useState } from "react"
 import { HealthDataImport } from "./data-import"
 import { VitalSigns } from "./vital-signs"
 import { TestResults } from "./test-results"
-import { TrendsAnalysis } from "./trends-analysis"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Upload, Activity, FileText, BarChart, Users, Calendar } from "lucide-react"
+import { Upload, Activity, FileText, Users, Calendar, AlertTriangle, Watch, TrendingUp, BarChart3 } from "lucide-react"
+import { HealthAlertSystem } from "./health-alert-system"
+import { WearableDeviceIntegration } from "./wearable-device-integration"
+import { DataTrendsAnalysis } from "./data-trends-analysis"
+import { HealthDataDashboard } from "./dashboard"
 
 export function HealthDataClient() {
-  const [activeTab, setActiveTab] = useState("import")
+  const [activeTab, setActiveTab] = useState("dashboard")
 
   return (
     <div className="space-y-6">
@@ -19,7 +22,12 @@ export function HealthDataClient() {
       </p>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
+        <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8">
+          <TabsTrigger value="dashboard" className="flex items-center gap-1">
+            <BarChart3 className="h-4 w-4" />
+            <span className="hidden md:inline">数据概览</span>
+            <span className="inline md:hidden">概览</span>
+          </TabsTrigger>
           <TabsTrigger value="import" className="flex items-center gap-1">
             <Upload className="h-4 w-4" />
             <span className="hidden md:inline">数据导入</span>
@@ -36,21 +44,30 @@ export function HealthDataClient() {
             <span className="inline md:hidden">检验</span>
           </TabsTrigger>
           <TabsTrigger value="trends" className="flex items-center gap-1">
-            <BarChart className="h-4 w-4" />
+            <TrendingUp className="h-4 w-4" />
             <span className="hidden md:inline">趋势分析</span>
             <span className="inline md:hidden">趋势</span>
+          </TabsTrigger>
+          <TabsTrigger value="alerts" className="flex items-center gap-1">
+            <AlertTriangle className="h-4 w-4" />
+            <span className="hidden md:inline">智能预警</span>
+            <span className="inline md:hidden">预警</span>
+          </TabsTrigger>
+          <TabsTrigger value="wearable" className="flex items-center gap-1">
+            <Watch className="h-4 w-4" />
+            <span className="hidden md:inline">可穿戴设备</span>
+            <span className="inline md:hidden">设备</span>
           </TabsTrigger>
           <TabsTrigger value="patients" className="flex items-center gap-1">
             <Users className="h-4 w-4" />
             <span className="hidden md:inline">患者数据</span>
             <span className="inline md:hidden">患者</span>
           </TabsTrigger>
-          <TabsTrigger value="schedule" className="flex items-center gap-1">
-            <Calendar className="h-4 w-4" />
-            <span className="hidden md:inline">数据计划</span>
-            <span className="inline md:hidden">计划</span>
-          </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="dashboard">
+          <HealthDataDashboard />
+        </TabsContent>
 
         <TabsContent value="import">
           <HealthDataImport />
@@ -65,7 +82,15 @@ export function HealthDataClient() {
         </TabsContent>
 
         <TabsContent value="trends">
-          <TrendsAnalysis />
+          <DataTrendsAnalysis />
+        </TabsContent>
+
+        <TabsContent value="alerts">
+          <HealthAlertSystem />
+        </TabsContent>
+
+        <TabsContent value="wearable">
+          <WearableDeviceIntegration />
         </TabsContent>
 
         <TabsContent value="patients">

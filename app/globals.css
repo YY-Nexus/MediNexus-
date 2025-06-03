@@ -2,317 +2,640 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
+/* 医疗机构UI设计系统 - 基于国标规范 */
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-  .vertical-gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#06c] to-[#00a3e0] font-bold;
-  }
+/* 基础层 - 符合医疗行业标准 */
+@layer base {
+  /* 根元素设置 */
+  :root {
+    /* 医疗色彩变量 */
+    --medical-primary: 37 99 235; /* 医疗蓝 */
+    --medical-success: 34 197 94; /* 医疗绿 */
+    --medical-warning: 245 158 11; /* 医疗橙 */
+    --medical-danger: 239 68 68; /* 医疗红 */
+    --medical-neutral: 100 116 139; /* 中性色 */
 
-  .float-element {
-    animation: float 3s ease-in-out infinite;
-  }
+    /* 字体变量 */
+    --medical-font-sans: "PingFang SC", "Microsoft YaHei", "SimHei", "Arial", sans-serif;
+    --medical-font-mono: "SF Mono", "Monaco", "Consolas", "Liberation Mono", "Courier New", monospace;
 
-  /* 添加平滑过渡效果 */
-  .sidebar-transition {
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s
-      cubic-bezier(0.4, 0, 0.2, 1);
-  }
+    /* 间距变量 */
+    --medical-spacing-unit: 0.25rem; /* 4px基础单位 */
 
-  .sidebar-item-transition {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+    /* 圆角变量 */
+    --medical-radius-sm: 0.25rem;
+    --medical-radius-md: 0.5rem;
+    --medical-radius-lg: 0.75rem;
 
-  .sidebar-content-transition {
-    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+    /* 阴影变量 */
+    --medical-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --medical-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --medical-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 
-  /* 新增 - 3D按钮效果 */
-  .button-3d {
-    transform: translateY(0);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .button-3d:active {
-    transform: translateY(4px);
-    box-shadow: none !important;
+    /* 过渡变量 */
+    --medical-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --medical-transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --medical-transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* 新增 - 波纹效果 */
-  .ripple-effect {
-    position: absolute;
-    border-radius: 50%;
-    transform: scale(0);
-    animation: ripple 0.6s linear;
-    background-color: rgba(255, 255, 255, 0.3);
+  /* 全局重置 - 符合医疗标准 */
+  * {
+    @apply border-border;
+    box-sizing: border-box;
   }
 
-  /* 新增 - 悬浮卡片效果 */
-  .hover-float {
-    transition: transform 0.3s ease;
+  /* 文档根元素 */
+  html {
+    font-size: 16px; /* 基础字体大小 - 符合可读性标准 */
+    line-height: 1.5; /* 标准行高 */
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
   }
 
-  .hover-float:hover {
-    transform: translateY(-8px);
+  /* 主体元素 */
+  body {
+    font-family: var(--medical-font-sans);
+    font-size: 1rem; /* 16px - 医疗标准正文大小 */
+    line-height: 1.5;
+    color: rgb(30 64 175); /* 医疗蓝色文字 */
+    background-color: rgb(248 250 252); /* 浅灰蓝背景 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
-  /* 新增 - 渐变边框 */
-  .gradient-border {
-    position: relative;
-    border-radius: 0.5rem;
-    background: white;
-    padding: 3px;
+  /* 标题层次 - 符合医疗信息层次 */
+  h1 {
+    @apply text-3xl font-bold text-blue-900 leading-tight mb-6;
+    /* 主标题 - 30px，用于页面标题 */
   }
 
-  .gradient-border::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 0.5rem;
-    padding: 2px;
-    background: linear-gradient(45deg, #0066cc, #00a3e0);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
+  h2 {
+    @apply text-2xl font-semibold text-blue-800 leading-tight mb-5;
+    /* 二级标题 - 24px，用于功能模块标题 */
   }
 
-  /* 新增 - 玻璃态效果 */
-  .glassmorphism {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-  }
-}
-
-/* 移动设备特定样式 */
-@media (max-width: 768px) {
-  .container {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-  }
-
-  h1,
-  h2,
   h3 {
-    text-align: center;
+    @apply text-xl font-semibold text-blue-700 leading-snug mb-4;
+    /* 三级标题 - 20px，用于卡片标题 */
   }
 
-  @media (min-width: 768px) {
-    h1,
-    h2,
-    h3 {
-      text-align: left;
-    }
+  h4 {
+    @apply text-lg font-medium text-blue-700 leading-snug mb-3;
+    /* 四级标题 - 18px，用于子功能标题 */
   }
 
-  /* 增加触摸目标大小 */
-  button,
+  h5 {
+    @apply text-base font-medium text-blue-600 leading-normal mb-2;
+    /* 五级标题 - 16px，用于表单标题 */
+  }
+
+  h6 {
+    @apply text-sm font-medium text-blue-600 leading-normal mb-2;
+    /* 六级标题 - 14px，用于辅助标题 */
+  }
+
+  /* 段落文字 */
+  p {
+    @apply text-base text-blue-700 leading-relaxed mb-4;
+    /* 正文 - 16px，1.75行高，适合长时间阅读 */
+  }
+
+  /* 链接样式 */
   a {
-    min-height: 2.5rem;
-    min-width: 2.5rem;
+    @apply text-blue-600 hover:text-blue-800 transition-colors duration-200;
+    text-decoration: none;
   }
 
-  /* 优化表单元素 */
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* 列表样式 */
+  ul,
+  ol {
+    @apply text-blue-700 leading-relaxed mb-4;
+  }
+
+  li {
+    @apply mb-1;
+  }
+
+  /* 表格样式 - 符合医疗数据展示标准 */
+  table {
+    @apply w-full text-blue-700;
+    border-collapse: collapse;
+  }
+
+  th {
+    @apply bg-blue-50 text-blue-800 font-semibold text-left px-4 py-3 border-b-2 border-blue-200;
+    height: 3.5rem; /* 56px - 表头高度 */
+  }
+
+  td {
+    @apply px-4 py-3 border-b border-blue-100;
+    height: 3rem; /* 48px - 表格行高度 */
+  }
+
+  /* 表单元素 - 符合医疗输入标准 */
+  label {
+    @apply text-blue-800 font-medium text-sm mb-1 block;
+  }
+
   input,
   select,
   textarea {
-    font-size: 1rem;
+    @apply text-blue-700 bg-white border border-blue-300 rounded-md;
+    @apply focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none;
+    @apply transition-colors duration-200;
+    min-height: 2.5rem; /* 40px - 最小触摸目标 */
   }
 
-  /* 增加底部间距，避免被底部导航栏遮挡 */
-  main {
-    padding-bottom: 5rem;
+  input::placeholder,
+  textarea::placeholder {
+    @apply text-blue-400;
   }
 
-  /* 优化滚动体验 */
-  .overflow-y-auto {
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
+  /* 按钮基础样式 */
+  button {
+    @apply font-medium transition-all duration-200;
+    min-height: 2.75rem; /* 44px - 符合无障碍标准 */
+    min-width: 2.75rem;
   }
 
-  /* 优化触摸反馈 */
-  .touch-feedback:active {
-    background-color: #e6f0fa;
-    transform: scale(0.95);
-    transition-property: all;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
+  /* 代码样式 */
+  code {
+    @apply font-mono text-sm bg-blue-50 text-blue-800 px-1 py-0.5 rounded;
   }
 
-  /* 新增 - 移动端优化的表单控件 */
-  .mobile-input {
-    @apply h-12 text-base px-4;
+  pre {
+    @apply font-mono text-sm bg-blue-50 text-blue-800 p-4 rounded-lg overflow-x-auto;
   }
 
-  .mobile-select {
-    @apply h-12 text-base px-4;
+  /* 选中文字样式 */
+  ::selection {
+    @apply bg-blue-200 text-blue-900;
   }
 
-  /* 新增 - 移动端底部安全区域 */
-  .safe-bottom {
-    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  /* 滚动条样式 - 医疗蓝主题 */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-blue-50 rounded;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-blue-300 rounded hover:bg-blue-400;
+  }
+
+  /* 焦点样式 - 符合无障碍标准 */
+  :focus-visible {
+    outline: 2px solid rgb(37 99 235);
+    outline-offset: 2px;
   }
 }
 
-/* 添加移动设备动画 */
-@keyframes pulse-medical {
-  0%,
-  100% {
+/* 组件层 - 医疗专用组件样式 */
+@layer components {
+  /* 医疗卡片组件 */
+  .medical-card {
+    @apply bg-white border border-blue-200 rounded-lg shadow-sm;
+    @apply hover:shadow-md transition-shadow duration-200;
+    @apply p-6;
+  }
+
+  .medical-card-header {
+    @apply border-b border-blue-100 pb-4 mb-4;
+  }
+
+  .medical-card-title {
+    @apply text-lg font-semibold text-blue-800 mb-1;
+  }
+
+  .medical-card-description {
+    @apply text-sm text-blue-600;
+  }
+
+  /* 医疗按钮组件 */
+  .medical-btn {
+    @apply inline-flex items-center justify-center;
+    @apply px-4 py-2 rounded-md font-medium text-sm;
+    @apply transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    min-height: 2.75rem; /* 44px 无障碍标准 */
+  }
+
+  .medical-btn-primary {
+    @apply medical-btn bg-blue-600 text-white;
+    @apply hover:bg-blue-700 active:bg-blue-800;
+    @apply focus:ring-blue-500;
+    @apply shadow-sm hover:shadow-md;
+  }
+
+  .medical-btn-secondary {
+    @apply medical-btn bg-white text-blue-600 border border-blue-600;
+    @apply hover:bg-blue-50 active:bg-blue-100;
+    @apply focus:ring-blue-500;
+  }
+
+  .medical-btn-outline {
+    @apply medical-btn bg-transparent text-blue-600 border border-blue-300;
+    @apply hover:bg-blue-50 hover:border-blue-400;
+    @apply focus:ring-blue-500;
+  }
+
+  /* 医疗输入框组件 */
+  .medical-input {
+    @apply w-full px-3 py-2 text-blue-700 bg-white border border-blue-300 rounded-md;
+    @apply focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none;
+    @apply transition-colors duration-200;
+    @apply placeholder:text-blue-400;
+    min-height: 2.5rem; /* 40px */
+  }
+
+  .medical-input-error {
+    @apply border-red-300 focus:border-red-500 focus:ring-red-200;
+  }
+
+  /* 医疗标签组件 */
+  .medical-label {
+    @apply block text-sm font-medium text-blue-800 mb-1;
+  }
+
+  .medical-label-required::after {
+    content: " *";
+    @apply text-red-500;
+  }
+
+  /* 医疗状态指示器 */
+  .medical-status {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .medical-status-success {
+    @apply medical-status bg-green-100 text-green-800;
+  }
+
+  .medical-status-warning {
+    @apply medical-status bg-yellow-100 text-yellow-800;
+  }
+
+  .medical-status-danger {
+    @apply medical-status bg-red-100 text-red-800;
+  }
+
+  .medical-status-info {
+    @apply medical-status bg-blue-100 text-blue-800;
+  }
+
+  /* 医疗表格组件 */
+  .medical-table {
+    @apply w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm;
+  }
+
+  .medical-table th {
+    @apply bg-blue-50 text-blue-800 font-semibold text-left px-4 py-3;
+    @apply border-b-2 border-blue-200;
+    height: 3.5rem;
+  }
+
+  .medical-table td {
+    @apply px-4 py-3 text-blue-700 border-b border-blue-100;
+    height: 3rem;
+  }
+
+  .medical-table tr:hover {
+    @apply bg-blue-25;
+  }
+
+  /* 医疗导航组件 */
+  .medical-nav-item {
+    @apply flex items-center px-3 py-2 text-sm font-medium rounded-md;
+    @apply text-blue-700 hover:text-blue-900 hover:bg-blue-50;
+    @apply transition-colors duration-200;
+  }
+
+  .medical-nav-item-active {
+    @apply medical-nav-item bg-blue-100 text-blue-900;
+  }
+
+  /* 医疗面包屑组件 */
+  .medical-breadcrumb {
+    @apply flex items-center space-x-2 text-sm text-blue-600;
+  }
+
+  .medical-breadcrumb-separator {
+    @apply text-blue-400;
+  }
+
+  .medical-breadcrumb-current {
+    @apply text-blue-800 font-medium;
+  }
+
+  /* 医疗警告框组件 */
+  .medical-alert {
+    @apply p-4 rounded-md border-l-4;
+  }
+
+  .medical-alert-info {
+    @apply medical-alert bg-blue-50 border-blue-400 text-blue-800;
+  }
+
+  .medical-alert-success {
+    @apply medical-alert bg-green-50 border-green-400 text-green-800;
+  }
+
+  .medical-alert-warning {
+    @apply medical-alert bg-yellow-50 border-yellow-400 text-yellow-800;
+  }
+
+  .medical-alert-danger {
+    @apply medical-alert bg-red-50 border-red-400 text-red-800;
+  }
+}
+
+/* 工具层 - 医疗专用工具类 */
+@layer utilities {
+  /* 医疗间距工具类 */
+  .medical-spacing-xs {
+    @apply p-2;
+  } /* 8px */
+  .medical-spacing-sm {
+    @apply p-3;
+  } /* 12px */
+  .medical-spacing-md {
+    @apply p-4;
+  } /* 16px */
+  .medical-spacing-lg {
+    @apply p-6;
+  } /* 24px */
+  .medical-spacing-xl {
+    @apply p-8;
+  } /* 32px */
+
+  /* 医疗文字工具类 */
+  .medical-text-primary {
+    @apply text-blue-700;
+  }
+  .medical-text-secondary {
+    @apply text-blue-600;
+  }
+  .medical-text-muted {
+    @apply text-blue-500;
+  }
+  .medical-text-accent {
+    @apply text-blue-800;
+  }
+
+  /* 医疗背景工具类 */
+  .medical-bg-primary {
+    @apply bg-blue-600;
+  }
+  .medical-bg-secondary {
+    @apply bg-blue-50;
+  }
+  .medical-bg-muted {
+    @apply bg-blue-25;
+  }
+
+  /* 医疗边框工具类 */
+  .medical-border {
+    @apply border border-blue-200;
+  }
+  .medical-border-primary {
+    @apply border border-blue-600;
+  }
+  .medical-border-muted {
+    @apply border border-blue-100;
+  }
+
+  /* 医疗阴影工具类 */
+  .medical-shadow-sm {
+    box-shadow: var(--medical-shadow-sm);
+  }
+  .medical-shadow-md {
+    box-shadow: var(--medical-shadow-md);
+  }
+  .medical-shadow-lg {
+    box-shadow: var(--medical-shadow-lg);
+  }
+
+  /* 医疗过渡工具类 */
+  .medical-transition {
+    transition: var(--medical-transition-normal);
+  }
+  .medical-transition-fast {
+    transition: var(--medical-transition-fast);
+  }
+  .medical-transition-slow {
+    transition: var(--medical-transition-slow);
+  }
+
+  /* 医疗布局工具类 */
+  .medical-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .medical-grid {
+    @apply grid gap-6;
+  }
+
+  .medical-grid-cols-1 {
+    @apply medical-grid grid-cols-1;
+  }
+  .medical-grid-cols-2 {
+    @apply medical-grid grid-cols-1 md:grid-cols-2;
+  }
+  .medical-grid-cols-3 {
+    @apply medical-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
+  }
+  .medical-grid-cols-4 {
+    @apply medical-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4;
+  }
+
+  /* 医疗响应式工具类 */
+  .medical-responsive-text {
+    @apply text-sm md:text-base lg:text-lg;
+  }
+
+  .medical-responsive-spacing {
+    @apply p-4 md:p-6 lg:p-8;
+  }
+
+  /* 医疗无障碍工具类 */
+  .medical-focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  }
+
+  .medical-sr-only {
+    @apply sr-only;
+  }
+
+  /* 医疗动画工具类 */
+  .medical-fade-in {
+    animation: medical-fade-in 0.3s ease-out;
+  }
+
+  .medical-slide-up {
+    animation: medical-slide-up 0.3s ease-out;
+  }
+
+  .medical-scale-in {
+    animation: medical-scale-in 0.2s ease-out;
+  }
+
+  /* 医疗打印样式 */
+  @media print {
+    .medical-no-print {
+      display: none !important;
+    }
+
+    .medical-print-only {
+      display: block !important;
+    }
+
+    * {
+      color: black !important;
+      background: white !important;
+    }
+  }
+}
+
+/* 医疗动画定义 */
+@keyframes medical-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes medical-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes medical-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
     opacity: 1;
     transform: scale(1);
   }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.05);
+}
+
+/* 医疗暗色模式支持 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* 暗色模式下的医疗色彩调整 */
+    --medical-bg-primary: rgb(15 23 42);
+    --medical-bg-secondary: rgb(30 41 59);
+    --medical-text-primary: rgb(226 232 240);
+    --medical-text-secondary: rgb(148 163 184);
+  }
+
+  .dark {
+    @apply bg-slate-900 text-slate-200;
+  }
+
+  .dark .medical-card {
+    @apply bg-slate-800 border-slate-700;
+  }
+
+  .dark .medical-input {
+    @apply bg-slate-800 border-slate-600 text-slate-200;
   }
 }
 
-.animate-pulse-medical {
-  animation: pulse-medical 2s ease-in-out infinite;
-}
-
-/* 添加浮动动画 */
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
+/* 医疗高对比度模式支持 */
+@media (prefers-contrast: high) {
+  * {
+    border-width: 2px !important;
   }
-  50% {
-    transform: translateY(-10px);
+
+  .medical-btn {
+    border-width: 2px !important;
   }
-}
 
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-/* 新增 - 波纹动画 */
-@keyframes ripple {
-  to {
-    transform: scale(4);
-    opacity: 0;
+  .medical-input {
+    border-width: 2px !important;
   }
 }
 
-/* 新增 - 闪光效果 */
-@keyframes shine {
-  from {
-    background-position: 200% 0;
-  }
-  to {
-    background-position: -200% 0;
-  }
-}
-
-.shine-effect {
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  background-size: 200% 100%;
-  animation: shine 2s infinite;
-}
-
-/* 品牌渐变背景 - 使用标准CSS */
-.bg-medical-gradient {
-  background-image: linear-gradient(to right, #0066cc, #00a3e0);
-}
-
-.bg-health-gradient {
-  background-image: linear-gradient(to right, #00cc99, #00a3e0);
-}
-
-.bg-innovation-gradient {
-  background-image: linear-gradient(to right, #9966ff, #ff6b6b);
-}
-
-/* 可能存在的其他渐变文本类 */
-.vertical-gradient-text {
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  background-image: linear-gradient(to right, #0066cc, #00a3e0);
-  font-weight: 700;
-}
-
-.clinical-gradient-text {
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  background-image: linear-gradient(to right, #00cc99, #0066cc);
-  font-weight: 700;
-}
-
-.technical-gradient-text {
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  background-image: linear-gradient(to right, #9966ff, #ff6b6b);
-  font-weight: 700;
-}
-
-/* 布局优化 */
-.main-content {
-  width: 100%;
-  transition: margin-left 0.3s ease, width 0.3s ease;
-}
-
-/* 响应式布局调整 */
-@media (min-width: 768px) {
-  .sidebar-expanded .main-content {
-    margin-left: 16rem; /* 256px */
-    width: calc(100% - 16rem);
-  }
-
-  .sidebar-collapsed .main-content {
-    margin-left: 4rem; /* 64px */
-    width: calc(100% - 4rem);
+/* 医疗减少动画模式支持 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
-/* 新增 - 滚动条美化 */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* 移动设备优化 */
+@media (max-width: 768px) {
+  /* 增加触摸目标大小 */
+  .medical-btn {
+    min-height: 3rem; /* 48px */
+    min-width: 3rem;
+  }
+
+  /* 优化表格显示 */
+  .medical-table {
+    font-size: 0.875rem;
+  }
+
+  .medical-table th,
+  .medical-table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  /* 优化输入框 */
+  .medical-input {
+    font-size: 1rem; /* 防止iOS缩放 */
+  }
+
+  /* 优化间距 */
+  .medical-container {
+    @apply px-3;
+  }
+
+  .medical-responsive-spacing {
+    @apply p-3;
+  }
 }
 
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 4px;
+/* 平板设备优化 */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .medical-grid-cols-3 {
+    @apply grid-cols-2;
+  }
+
+  .medical-grid-cols-4 {
+    @apply grid-cols-3;
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  background: #94a3b8;
-  border-radius: 4px;
-}
+/* 大屏设备优化 */
+@media (min-width: 1920px) {
+  .medical-container {
+    max-width: 1600px;
+  }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
-}
-
-/* 新增 - 页面过渡动画 */
-.page-transition-enter {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.page-transition-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 300ms, transform 300ms;
-}
-
-.page-transition-exit {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.page-transition-exit-active {
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 300ms, transform 300ms;
+  .medical-responsive-text {
+    @apply text-lg;
+  }
 }

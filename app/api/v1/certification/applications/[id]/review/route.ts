@@ -47,9 +47,9 @@ const applications = [
 ]
 
 // 审核认证申请 - 修复 Next.js 15 的类型错误
-export async function POST(request: NextRequest, context: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const id = context.params.id
+    const { id } = await params
     const body = await request.json()
     const { status, comments } = body
 

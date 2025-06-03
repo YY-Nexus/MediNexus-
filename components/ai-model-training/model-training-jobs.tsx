@@ -229,7 +229,17 @@ export function ModelTrainingJobs() {
                         <div className="col-span-2">{getStatusBadge(job.status)}</div>
                         <div className="col-span-2">
                           <div className="flex flex-col gap-1">
-                            <Progress value={job.progress} className="h-2" />
+                            <Progress
+                              value={job.progress}
+                              variant={
+                                job.status === "failed"
+                                  ? "destructive"
+                                  : job.status === "completed"
+                                    ? "success"
+                                    : "info"
+                              }
+                              className="h-2"
+                            />
                             <span className="text-xs text-gray-500">{job.progress}%</span>
                           </div>
                         </div>

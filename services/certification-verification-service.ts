@@ -61,6 +61,52 @@ export const availableProviders: VerificationProvider[] = [
     verificationTime: "1个工作日",
     fee: "包月服务",
   },
+  // 添加国际验证机构
+  {
+    id: "who-verification",
+    name: "世界卫生组织资质验证中心",
+    isOfficial: true,
+    isFast: false,
+    supportedTypes: ["international-medical-license", "who-certification"],
+    verificationTime: "3-5个工作日",
+    fee: "免费",
+  },
+  {
+    id: "ecfmg",
+    name: "美国外国医学毕业生教育委员会",
+    isOfficial: true,
+    isFast: false,
+    supportedTypes: ["usmle-certification", "ecfmg-certificate"],
+    verificationTime: "5-7个工作日",
+    fee: "$200",
+  },
+  {
+    id: "gmc-uk",
+    name: "英国医学总会",
+    isOfficial: true,
+    isFast: false,
+    supportedTypes: ["gmc-registration", "uk-medical-license"],
+    verificationTime: "2-4个工作日",
+    fee: "£150",
+  },
+  {
+    id: "medical-board-australia",
+    name: "澳大利亚医学委员会",
+    isOfficial: true,
+    isFast: false,
+    supportedTypes: ["ahpra-registration", "australian-medical-license"],
+    verificationTime: "3-5个工作日",
+    fee: "AUD $300",
+  },
+  {
+    id: "international-fast-verify",
+    name: "国际医疗资质快速验证服务",
+    isOfficial: false,
+    isFast: true,
+    supportedTypes: ["international-medical-license", "who-certification", "usmle-certification", "gmc-registration"],
+    verificationTime: "6小时内",
+    fee: "每次验证$50",
+  },
 ]
 
 // 导出服务 - 注意这里使用小写开头，与导入保持一致
@@ -200,5 +246,112 @@ export const certificationVerificationService = {
         message: "无法获取验证状态，请稍后重试",
       }
     }
+  },
+
+  /**
+   * 验证国际医疗资质
+   * @param certificateNumber 资质证书编号
+   * @param name 医生姓名
+   * @param country 发证国家
+   * @param certificationType 资质类型
+   * @param providerId 验证机构ID
+   * @returns 验证结果
+   */
+  verifyInternationalCertification: async (
+    certificateNumber: string,
+    name: string,
+    country: string,
+    certificationType: string,
+    providerId = "who-verification",
+  ): Promise<CertificationVerificationResult> => {
+    const provider = availableProviders.find((p) => p.id === providerId) || availableProviders[0]
+
+    // 模拟API调用延迟
+    const delay = provider.isFast ? 1000 : 2000
+    await new Promise((resolve) => setTimeout(resolve, delay))
+
+    // 模拟国际资质验证结果
+    if (certificateNumber.startsWith("WHO")) {
+      return {
+        isValid: true,
+        name: name,
+        institution: "World Health Organization",
+        specialty: "International Medical Practice",
+        validUntil: "2029-12-31",
+        message: "国际医疗资质有效",
+        verificationId: `INTL-${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
+        verificationDate: new Date().toISOString(),
+        verificationProvider: provider.name,
+        details: {
+          country: country,
+          certificationType: certificationType,
+          internationalStatus: "Active",
+        },
+      }
+    } else if (certificateNumber.startsWith("USMLE")) {
+      return {
+        isValid: true,
+        name: name,
+        institution: "Educational Commission for Foreign Medical Graduates",
+        specialty: "General Medicine",
+        validUntil: "2028-06-30",
+        message: "USMLE认证有效",
+        verificationId: `USMLE-${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
+        verificationDate: new Date().toISOString(),
+        verificationProvider: provider.name,
+        details: {
+          country: "United States",
+          certificationType: certificationType,
+          stepsPassed: ["Step 1", "Step 2 CK", "Step 2 CS"],
+        },
+      }
+    } else {
+      return {
+        isValid: false,
+        message: "未找到匹配的国际医疗资质",
+        verificationProvider: provider.name,
+        verificationDate: new Date().toISOString(),
+      }
+    }
+  },
+
+  /**
+   * 获取即将到期的资质
+   * @param userId 用户ID
+   * @param daysThreshold 提前提醒天数
+   * @returns 即将到期的资质列表
+   */
+  getExpiringCertifications: async (userId: string, daysThreshold = 90): Promise<any[]> => {
+    // 模拟获取用户资质数据
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    const now = new Date()
+    const thresholdDate = new Date(now.getTime() + daysThreshold * 24 * 60 * 60 * 1000)
+
+    // 模拟即将到期的资质数据
+    return [
+      {
+        id: "cert-exp-001",
+        type: "doctor-license",
+        licenseNumber: "1102023001001",
+        name: "张三",
+        institution: "北京协和医院",
+        expiryDate: "2024-03-15",
+        daysRemaining: 45,
+        status: "verified",
+        priority: "high",
+      },
+      {
+        id: "cert-exp-002",
+        type: "international-medical-license",
+        licenseNumber: "WHO2023002002",
+        name: "李四",
+        institution: "World Health Organization",
+        expiryDate: "2024-05-20",
+        daysRemaining: 110,
+        status: "verified",
+        priority: "medium",
+      },
+    ]
   },
 }

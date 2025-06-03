@@ -1,10 +1,10 @@
-# 言语「 医枢³」智能诊疗系统 (YanYu MediNexus³ AI Diagnostic System)
+# 言语「医枢」智能诊疗系统 (YanYu "MediCore" Intelligent Diagnostic System)
 
-![言语医枢³](public/medical-data-blue-gradient.png)
+![言语医枢](public/medical-data-blue-gradient.png)
 
 ## 项目简介
 
-言语「 医枢³」智能诊疗系统（YanYu MediNexus³ AI Diagnostic System，简称YY³-MNDS）是一个基于人工智能的医疗诊断和健康管理系统。该系统旨在通过AI技术辅助医生进行诊断决策，提高医疗效率和准确性，同时为患者提供更好的医疗服务体验。
+言语「医枢」智能诊疗系统（YanYu "MediCore" Intelligent Diagnostic System，简称YY-MCIDS）是一个基于人工智能的医疗诊断和健康管理系统。该系统旨在通过AI技术辅助医生进行诊断决策，提高医疗效率和准确性，同时为患者提供更好的医疗服务体验。
 
 ## 功能特点
 
@@ -42,8 +42,8 @@
 1. 克隆仓库
 
 \`\`\`bash
-git clone https://github.com/your-organization/yanyu-medinexus.git
-cd yanyu-medinexus
+git clone https://github.com/your-organization/yanyu-medicore.git
+cd yanyu-medicore
 \`\`\`
 
 2. 安装依赖
@@ -71,7 +71,7 @@ npm run dev
 ## 项目结构
 
 \`\`\`
-yanyu-medinexus/
+yanyu-medicore/
 ├── app/                    # Next.js App Router 页面
 │   ├── ai-model/           # AI模型相关页面
 │   ├── analytics/          # 统计分析页面
@@ -142,12 +142,12 @@ yanyu-medinexus/
 
 如有任何问题或建议，请联系我们：
 
-- 邮箱：support@yanyu-medinexus.com
-- 网站：https://www.yanyu-medinexus.com
+- 邮箱：support@yanyu-medicore.com
+- 网站：https://www.yanyu-medicore.com
 
 ---
 
-© 2024 言语「 医枢³」智能诊疗系统 | YanYu MediNexus³ AI Diagnostic System
+© 2024 言语「医枢」智能诊疗系统 | YanYu "MediCore" Intelligent Diagnostic System
 \`\`\`
 
-现在，让我们进行全局启动问题审查，并提供修复建议：
+更新应用清单文件：

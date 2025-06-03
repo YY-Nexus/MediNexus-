@@ -1,86 +1,40 @@
-// 桶文件 (Barrel file) - 简化导入
-// 这种方式可以让我们从 @/components 直接导入组件，而不需要指定完整路径
+// Layout Components
+export { AppShell } from "./layout/app-shell"
+export { AppHeader } from "./layout/app-header"
+export { SidebarNav } from "./layout/sidebar-nav"
+export { PageBreadcrumb } from "./layout/page-breadcrumb"
+export { KeyboardShortcutsDialog } from "./layout/keyboard-shortcuts-dialog"
 
-// UI 组件
-export * from "./ui/button"
-export * from "./ui/card"
-export * from "./ui/input"
-export * from "./ui/label"
-export * from "./ui/select"
-export * from "./ui/checkbox"
-export * from "./ui/radio-group"
-export * from "./ui/textarea"
-export * from "./ui/toast"
-export * from "./ui/tooltip"
-export * from "./ui/dialog"
-export * from "./ui/dropdown-menu"
-export * from "./ui/tabs"
-export * from "./ui/table"
-export * from "./ui/loading-spinner"
-export * from "./ui/progress"
-export * from "./ui/calendar"
-export * from "./ui/date-picker"
-export * from "./ui/popover"
-export * from "./ui/medical-button"
-export * from "./ui/medical-card"
-export * from "./ui/responsive-medical-card"
-export * from "./ui/advanced-search"
-export * from "./ui/loading-fallback"
-export * from "./ui/chart"
+// Navigation Components
+export { UserNav } from "./user-nav"
+export { NavigationSearch } from "./navigation-search"
 
-// 布局组件
-export * from "./layout/page-header"
-export * from "./layout/sidebar"
-export * from "./layout/main-nav"
-export * from "./layout/mobile-nav"
-export * from "./layout/breadcrumb"
-export * from "./layout/global-navigation"
+// UI Components
+export { Button } from "./ui/button"
+export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card"
+export { Badge } from "./ui/badge"
+export { Progress } from "./ui/progress"
+export { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs"
+export { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
+export {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu"
+export { Input } from "./ui/input"
+export { MedicalButton } from "./ui/medical-button"
+export { MedicalCard } from "./ui/medical-card"
+export { LoadingSpinner } from "./ui/loading-spinner"
 
-// 认证组件
-export * from "./auth/login-form"
-export * from "./auth/register-form"
-export * from "./auth/auth-guard"
-export * from "./auth/forgot-password-form"
-export * from "./auth/reset-password-form"
+// Brand Components
+export { Logo } from "./brand/logo"
+export { ShieldLogo } from "./brand/shield-logo"
 
-// 患者相关组件
-export * from "./patients/patient-list"
-export * from "./patients/patient-details"
-export * from "./patients/add-patient-dialog"
-export * from "./patients/patient-groups-client"
-export * from "./patients/followup-client"
-export * from "./patients/medical-records-client"
-
-// 医疗记录组件
-export * from "./medical-records/medical-imaging-uploader"
-export * from "./medical-records/prescription-uploader"
-export * from "./medical-records/batch-processor"
-export * from "./medical-records/medical-records-client"
-export * from "./medical-records/ai-model-selector"
-export * from "./medical-records/multi-modal-ai-diagnosis"
-export * from "./medical-records/modality-specific-analysis"
-export * from "./medical-records/cross-modal-analysis"
-export * from "./medical-records/ocr-service"
-export * from "./medical-records/knowledge-integration"
-export * from "./medical-records/knowledge-button"
-export * from "./medical-records/3d-medical-viewer"
-export * from "./medical-records/dicom-viewer"
-export * from "./medical-records/ai-diagnosis"
-export * from "./medical-records/record-association"
-
-// AI 模型组件
-export * from "./ai-model/model-overview"
-export * from "./ai-model/model-performance"
-export * from "./ai-model/model-integration"
-export * from "./ai-model/ai-model-client"
-export * from "./ai-model/model-performance-client"
-export * from "./ai-model/model-management"
-export * from "./ai-model/model-version-history"
-export * from "./ai-model/model-deployment"
-export * from "./ai-model/model-monitoring"
-export * from "./ai-model/model-navigation"
-
-// 导出 ModelDeployment 组件
+// Feature Components
 export { default as ModelDeployment } from "./model-deployment/ModelDeployment"
 
-// 其他组件...
+// Error Handling
+export { SafeWrapper } from "./safe-wrapper"
+export { GlobalErrorBoundary } from "./error-boundary/global-error-boundary"

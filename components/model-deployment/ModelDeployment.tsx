@@ -1,264 +1,304 @@
 "use client"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  Brain,
+  Server,
+  Activity,
+  CheckCircle,
+  AlertCircle,
+  Play,
+  Pause,
+  RotateCcw,
+  Settings,
+  Monitor,
+  Cpu,
+  HardDrive,
+  Upload,
+  Download,
+  Zap,
+} from "lucide-react"
 
-// 定义模型部署状态类型
-type DeploymentStatus = "deployed" | "pending" | "failed" | "stopped"
+interface ModelDeploymentProps {
+  className?: string
+}
 
-// 定义模型部署信息类型
-interface ModelDeployment {
-  id: string
-  name: string
-  version: string
-  status: DeploymentStatus
-  environment: string
-  deployedAt: string
-  health: number
-  region: string
-  resources: {
-    cpu: string
-    memory: string
-    gpu?: string
+export default function ModelDeployment({ className }: ModelDeploymentProps) {
+  const [selectedModel, setSelectedModel] = useState<string | null>(null)
+
+  const models = [
+    {
+      id: "chest-xray-v2",
+      name: "胸部X光诊断模型",
+      version: "v2.1.3",
+      status: "running",
+      accuracy: "94.2%",
+      requests: 1234,
+      deployedAt: "2024-01-15",
+    },
+    {
+      id: "ct-analysis-v1",
+      name: "CT影像分析模型",
+      version: "v1.8.2",
+      status: "running",
+      accuracy: "91.8%",
+      requests: 856,
+      deployedAt: "2024-01-10",
+    },
+    {
+      id: "ecg-analysis-v3",
+      name: "心电图分析模型",
+      version: "v3.0.1",
+      status: "updating",
+      accuracy: "96.5%",
+      requests: 567,
+      deployedAt: "2024-01-12",
+    },
+  ]
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "running":
+        return <Badge variant="default">运行中</Badge>
+      case "updating":
+        return <Badge variant="secondary">更新中</Badge>
+      case "stopped":
+        return <Badge variant="destructive">已停止</Badge>
+      default:
+        return <Badge variant="outline">未知</Badge>
+    }
   }
-}
 
-// 模拟数据
-const deployments: ModelDeployment[] = [
-  {
-    id: "model-1",
-    name: "肺部CT诊断模型",
-    version: "v2.3.0",
-    status: "deployed",
-    environment: "生产环境",
-    deployedAt: "2023-05-15T08:30:00Z",
-    health: 98,
-    region: "华东区域",
-    resources: {
-      cpu: "4 核",
-      memory: "16 GB",
-      gpu: "NVIDIA T4",
-    },
-  },
-  {
-    id: "model-2",
-    name: "心电图分析模型",
-    version: "v1.5.2",
-    status: "deployed",
-    environment: "生产环境",
-    deployedAt: "2023-04-20T10:15:00Z",
-    health: 100,
-    region: "华北区域",
-    resources: {
-      cpu: "2 核",
-      memory: "8 GB",
-    },
-  },
-  {
-    id: "model-3",
-    name: "医学影像分割模型",
-    version: "v3.0.1",
-    status: "pending",
-    environment: "测试环境",
-    deployedAt: "2023-05-18T14:45:00Z",
-    health: 0,
-    region: "华南区域",
-    resources: {
-      cpu: "8 核",
-      memory: "32 GB",
-      gpu: "NVIDIA A100",
-    },
-  },
-  {
-    id: "model-4",
-    name: "医疗文本分析模型",
-    version: "v1.2.0",
-    status: "failed",
-    environment: "开发环境",
-    deployedAt: "2023-05-17T09:20:00Z",
-    health: 0,
-    region: "华东区域",
-    resources: {
-      cpu: "2 核",
-      memory: "4 GB",
-    },
-  },
-]
-
-// 获取状态徽章颜色
-const getStatusColor = (status: DeploymentStatus) => {
-  switch (status) {
-    case "deployed":
-      return "bg-green-500"
-    case "pending":
-      return "bg-yellow-500"
-    case "failed":
-      return "bg-red-500"
-    case "stopped":
-      return "bg-gray-500"
-    default:
-      return "bg-gray-500"
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "running":
+        return <CheckCircle className="h-5 w-5 text-green-500" />
+      case "updating":
+        return <AlertCircle className="h-5 w-5 text-yellow-500" />
+      case "stopped":
+        return <AlertCircle className="h-5 w-5 text-red-500" />
+      default:
+        return <AlertCircle className="h-5 w-5 text-gray-500" />
+    }
   }
-}
 
-// 获取状态文本
-const getStatusText = (status: DeploymentStatus) => {
-  switch (status) {
-    case "deployed":
-      return "已部署"
-    case "pending":
-      return "部署中"
-    case "failed":
-      return "部署失败"
-    case "stopped":
-      return "已停止"
-    default:
-      return "未知状态"
-  }
-}
-
-// 格式化日期
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString)
-  return date.toLocaleString("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  })
-}
-
-// 模型部署组件
-function ModelDeploymentComponent() {
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className={`space-y-6 ${className}`}>
+      {/* 系统状态概览 */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">总部署模型</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">运行中模型</CardTitle>
+            <Brain className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{deployments.length}</div>
+            <div className="text-2xl font-bold text-blue-600">8</div>
+            <p className="text-xs text-muted-foreground">总计 12 个模型</p>
           </CardContent>
         </Card>
+
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">运行中模型</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">CPU使用率</CardTitle>
+            <Cpu className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{deployments.filter((d) => d.status === "deployed").length}</div>
+            <div className="text-2xl font-bold text-green-600">67%</div>
+            <Progress value={67} className="mt-2" />
           </CardContent>
         </Card>
+
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">部署中模型</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">内存使用</CardTitle>
+            <HardDrive className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{deployments.filter((d) => d.status === "pending").length}</div>
+            <div className="text-2xl font-bold text-orange-600">12.4GB</div>
+            <p className="text-xs text-muted-foreground">总计 32GB</p>
           </CardContent>
         </Card>
+
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">故障模型</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">今日请求</CardTitle>
+            <Activity className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{deployments.filter((d) => d.status === "failed").length}</div>
+            <div className="text-2xl font-bold text-purple-600">24,567</div>
+            <p className="text-xs text-muted-foreground">平均响应 2.3s</p>
           </CardContent>
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>模型部署状态</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {deployments.map((deployment) => (
-              <div key={deployment.id} className="border rounded-lg p-4">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                  <div>
-                    <h3 className="text-lg font-semibold">{deployment.name}</h3>
-                    <div className="text-sm text-muted-foreground">版本: {deployment.version}</div>
-                  </div>
-                  <div className="flex items-center mt-2 md:mt-0 space-x-2">
-                    <Badge className={`${getStatusColor(deployment.status)}`}>{getStatusText(deployment.status)}</Badge>
-                    <Badge variant="outline">{deployment.environment}</Badge>
-                  </div>
-                </div>
+      {/* 主要内容区域 */}
+      <Tabs defaultValue="models" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="models">模型管理</TabsTrigger>
+          <TabsTrigger value="monitoring">性能监控</TabsTrigger>
+          <TabsTrigger value="deployment">部署配置</TabsTrigger>
+        </TabsList>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                  <div>
-                    <div className="text-sm font-medium text-muted-foreground">部署时间</div>
-                    <div>{formatDate(deployment.deployedAt)}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm font-medium text-muted-foreground">部署区域</div>
-                    <div>{deployment.region}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm font-medium text-muted-foreground">资源配置</div>
-                    <div>
-                      {deployment.resources.cpu} / {deployment.resources.memory}{" "}
-                      {deployment.resources.gpu ? `/ ${deployment.resources.gpu}` : ""}
+        <TabsContent value="models" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Server className="h-5 w-5 mr-2" />
+                部署的AI模型
+              </CardTitle>
+              <CardDescription>当前部署的所有AI模型及其运行状态</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {models.map((model) => (
+                  <div
+                    key={model.id}
+                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                    onClick={() => setSelectedModel(model.id)}
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-2">
+                        {getStatusIcon(model.status)}
+                        <div>
+                          <h3 className="font-semibold">{model.name}</h3>
+                          <p className="text-sm text-gray-600">
+                            版本 {model.version} • 部署于 {model.deployedAt}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      {getStatusBadge(model.status)}
+                      <div className="text-right">
+                        <p className="text-sm font-medium">准确率: {model.accuracy}</p>
+                        <p className="text-xs text-gray-600">今日请求: {model.requests}</p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button size="sm" variant="outline">
+                          <Monitor className="h-4 w-4" />
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          {model.status === "running" ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <RotateCcw className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-
-                {deployment.status === "deployed" && (
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium text-muted-foreground">健康状态</span>
-                      <span className="text-sm font-medium">{deployment.health}%</span>
-                    </div>
-                    <Progress value={deployment.health} className="h-2" />
-                  </div>
-                )}
-
-                <div className="flex justify-end mt-4 space-x-2">
-                  {deployment.status === "deployed" && (
-                    <>
-                      <Button variant="outline" size="sm">
-                        查看日志
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        监控
-                      </Button>
-                      <Button variant="outline" size="sm" className="text-red-500 hover:text-red-700">
-                        停止
-                      </Button>
-                    </>
-                  )}
-                  {deployment.status === "pending" && (
-                    <Button variant="outline" size="sm" className="text-red-500 hover:text-red-700">
-                      取消部署
-                    </Button>
-                  )}
-                  {deployment.status === "failed" && (
-                    <>
-                      <Button variant="outline" size="sm">
-                        查看错误
-                      </Button>
-                      <Button variant="default" size="sm">
-                        重试
-                      </Button>
-                    </>
-                  )}
-                  {deployment.status === "stopped" && (
-                    <Button variant="default" size="sm">
-                      启动
-                    </Button>
-                  )}
-                </div>
+                ))}
               </div>
-            ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="monitoring" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>实时性能监控</CardTitle>
+                <CardDescription>系统资源使用情况</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>CPU使用率</span>
+                    <span>67%</span>
+                  </div>
+                  <Progress value={67} />
+                </div>
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>内存使用率</span>
+                    <span>38%</span>
+                  </div>
+                  <Progress value={38} />
+                </div>
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>GPU使用率</span>
+                    <span>82%</span>
+                  </div>
+                  <Progress value={82} />
+                </div>
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>网络带宽</span>
+                    <span>45%</span>
+                  </div>
+                  <Progress value={45} />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>部署统计</CardTitle>
+                <CardDescription>模型部署和使用统计</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">总部署模型</span>
+                  <Badge variant="outline">12</Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">运行中模型</span>
+                  <Badge variant="default">8</Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">暂停模型</span>
+                  <Badge variant="secondary">3</Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">更新中模型</span>
+                  <Badge variant="destructive">1</Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">今日总请求</span>
+                  <Badge variant="outline">24,567</Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">平均响应时间</span>
+                  <Badge variant="outline">2.3s</Badge>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </CardContent>
-      </Card>
+        </TabsContent>
+
+        <TabsContent value="deployment" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Settings className="h-5 w-5 mr-2" />
+                部署配置
+              </CardTitle>
+              <CardDescription>管理模型部署的配置和设置</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Button className="h-20 flex flex-col items-center justify-center">
+                  <Upload className="h-6 w-6 mb-2" />
+                  上传新模型
+                </Button>
+                <Button variant="outline" className="h-20 flex flex-col items-center justify-center">
+                  <Download className="h-6 w-6 mb-2" />
+                  导出配置
+                </Button>
+                <Button variant="outline" className="h-20 flex flex-col items-center justify-center">
+                  <Zap className="h-6 w-6 mb-2" />
+                  性能优化
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
-
-// 导出组件
-export default ModelDeploymentComponent

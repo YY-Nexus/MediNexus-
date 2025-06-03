@@ -1,32 +1,31 @@
 "use client"
 
-import { Component, type ErrorInfo, type ReactNode } from "react"
-import { AlertTriangle, RefreshCw } from "lucide-react"
+import { Component, type ReactNode } from "react"
+import { AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-interface Props {
+interface SafeWrapperProps {
   children: ReactNode
   fallback?: ReactNode
-  componentName?: string
 }
 
-interface State {
+interface SafeWrapperState {
   hasError: boolean
-  error: Error | null
+  error?: Error
 }
 
-export class SafeWrapper extends Component<Props, State> {
-  constructor(props: Props) {
+export class SafeWrapper extends Component<SafeWrapperProps, SafeWrapperState> {
+  constructor(props: SafeWrapperProps) {
     super(props)
-    this.state = { hasError: false, error: null }
+    this.state = { hasError: false }
   }
 
-  static getDerivedStateFromError(error: Error): State {
+  static getDerivedStateFromError(error: Error): SafeWrapperState {
     return { hasError: true, error }
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error(`SafeWrapper 捕获错误 (${this.props.componentName}):`, error, errorInfo)
+  componentDidCatch(error: Error, errorInfo: any) {
+    console.error("SafeWrapper 捕获到错误:", error, errorInfo)
   }
 
   render() {
@@ -36,17 +35,12 @@ export class SafeWrapper extends Component<Props, State> {
       }
 
       return (
-        <div className="p-4 border border-red-200 rounded-md bg-red-50">
-          <div className="flex items-center gap-2 mb-2">
-            <AlertTriangle className="h-4 w-4 text-red-500" />
-            <h3 className="text-sm font-medium text-red-800">
-              组件加载失败 {this.props.componentName && `(${this.props.componentName})`}
-            </h3>
-          </div>
-          <p className="text-xs text-red-600 mb-3">{this.state.error?.message || "未知错误"}</p>
-          <Button size="sm" variant="outline" onClick={() => this.setState({ hasError: false, error: null })}>
-            <RefreshCw className="mr-1 h-3 w-3" />
-            重试
+        <div className="flex flex-col items-center justify-center p-6 border border-red-200 rounded-lg bg-red-50">
+          <AlertTriangle className="h-8 w-8 text-red-500 mb-2" />
+          <h3 className="text-lg font-semibold text-red-800 mb-2">组件加载失败</h3>
+          <p className="text-sm text-red-600 mb-4 text-center">此组件遇到了错误，请尝试刷新页面</p>
+          <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
+            刷新页面
           </Button>
         </div>
       )

@@ -1,51 +1,48 @@
-"use client"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import ClinicalTrialManagement from "./clinical-trial-management"
+import AdvancedDataAnalysis from "./advanced-data-analysis"
+import EnhancedCollaborationPlatform from "./enhanced-collaboration-platform"
+import EthicsReviewWorkflow from "./ethics-review-workflow"
 
-import { Suspense } from "react"
-import dynamic from "next/dynamic"
-import { LoadingSpinner } from "@/components/ui/loading-spinner"
-import { ErrorBoundary } from "@/components/error-boundary"
-import { ActiveProjects } from "@/components/research/active-projects"
-
-// 动态导入可能使用浏览器API的组件
-const ResearchProjectsDashboard = dynamic(
-  () => import("@/components/research/projects-dashboard").then((mod) => ({ default: mod.ResearchProjectsDashboard })),
-  {
-    loading: () => <LoadingSpinner />,
-    ssr: false,
-  },
-)
-
-const DataAnalysisOverview = dynamic(
-  () => import("@/components/research/data-analysis-overview").then((mod) => ({ default: mod.DataAnalysisOverview })),
-  {
-    loading: () => <LoadingSpinner />,
-    ssr: false,
-  },
-)
-
-export default function ResearchClient() {
+const ResearchClient = () => {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2">
-        <h2 className="text-xl font-semibold mb-4">研究项目概览</h2>
-        <ErrorBoundary>
-          <Suspense fallback={<LoadingSpinner />}>
-            <ResearchProjectsDashboard />
-          </Suspense>
-        </ErrorBoundary>
-
-        <h2 className="text-xl font-semibold mt-8 mb-4">数据分析</h2>
-        <ErrorBoundary>
-          <Suspense fallback={<LoadingSpinner />}>
-            <DataAnalysisOverview />
-          </Suspense>
-        </ErrorBoundary>
-      </div>
-
-      <div>
-        <h2 className="text-xl font-semibold mb-4">活跃项目</h2>
-        <ActiveProjects />
-      </div>
-    </div>
+    <Tabs defaultValue="overview" className="w-[400px]">
+      <TabsList className="grid w-full grid-cols-8">
+        <TabsTrigger value="overview">概览</TabsTrigger>
+        <TabsTrigger value="projects">项目管理</TabsTrigger>
+        <TabsTrigger value="trials">临床试验</TabsTrigger>
+        <TabsTrigger value="analysis">数据分析</TabsTrigger>
+        <TabsTrigger value="collaboration">协作平台</TabsTrigger>
+        <TabsTrigger value="ethics">伦理审查</TabsTrigger>
+        <TabsTrigger value="experiment">实验设计</TabsTrigger>
+        <TabsTrigger value="samples">样本管理</TabsTrigger>
+      </TabsList>
+      <TabsContent value="overview">
+        <p>This is the overview tab.</p>
+      </TabsContent>
+      <TabsContent value="projects">
+        <p>This is the projects tab.</p>
+      </TabsContent>
+      <TabsContent value="trials">
+        <ClinicalTrialManagement />
+      </TabsContent>
+      <TabsContent value="analysis">
+        <AdvancedDataAnalysis />
+      </TabsContent>
+      <TabsContent value="collaboration">
+        <EnhancedCollaborationPlatform />
+      </TabsContent>
+      <TabsContent value="ethics">
+        <EthicsReviewWorkflow />
+      </TabsContent>
+      <TabsContent value="experiment">
+        <p>This is the experiment tab.</p>
+      </TabsContent>
+      <TabsContent value="samples">
+        <p>This is the samples tab.</p>
+      </TabsContent>
+    </Tabs>
   )
 }
+
+export default ResearchClient
