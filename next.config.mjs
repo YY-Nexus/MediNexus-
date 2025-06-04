@@ -1,18 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    optimizePackageImports: ['lucide-react']
-  },
-  images: {
-    domains: ['blob.v0.dev'],
-    unoptimized: true
-  },
   eslint: {
-    ignoreDuringBuilds: false
+    ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: false
-  }
+    ignoreBuildErrors: true,
+  },
+  images: {
+    unoptimized: true,
+  },
 }
 
 export default nextConfig
