@@ -48,7 +48,7 @@ export { Logo } from "./brand/logo"
 export { ShieldLogo } from "./brand/shield-logo"
 
 // Feature Components - AI Model Training & Deployment
-export { ModelDeployment } from "./model-deployment/ModelDeployment"
+export { ModelDeployment } from "./ai-model-training/model-deployment"
 
 // Error Handling
 export { SafeWrapper } from "./safe-wrapper"
