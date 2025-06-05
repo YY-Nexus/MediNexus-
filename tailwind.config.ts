@@ -1,10 +1,12 @@
 import type { Config } from "tailwindcss"
+
 const config: Config = {
   darkMode: ["class"],
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
     "*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
@@ -50,60 +52,71 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // 医疗蓝色主题色彩系统
+        // 医疗主题颜色
         medical: {
-          50: "#eff6ff",
-          100: "#dbeafe",
-          200: "#bfdbfe",
-          300: "#93c5fd",
-          400: "#60a5fa",
-          500: "#3b82f6",
-          600: "#2563eb", // 主要蓝色
-          700: "#1d4ed8", // 深蓝色
-          800: "#1e40af",
-          900: "#1e3a8a",
-          950: "#172554",
+          50: "#f0f9ff",
+          100: "#e0f2fe",
+          200: "#bae6fd",
+          300: "#7dd3fc",
+          400: "#38bdf8",
+          500: "#0ea5e9",
+          600: "#0284c7",
+          700: "#0369a1",
+          800: "#075985",
+          900: "#0c4a6e",
+          950: "#082f49",
         },
-        // 重新定义默认颜色为蓝色系
-        // border: "#bfdbfe", // 蓝色边框
-        // input: "#bfdbfe", // 蓝色输入框边框
-        // ring: "#2563eb", // 蓝色焦点环
-        // background: "#ffffff", // 白色背景
-        // foreground: "#1d4ed8", // 蓝色前景文字
-        // primary: {
-        //   DEFAULT: "#2563eb", // 主要蓝色
-        //   foreground: "#ffffff", // 白色文字
-        // },
-        // secondary: {
-        //   DEFAULT: "#eff6ff", // 浅蓝色背景
-        //   foreground: "#1d4ed8", // 深蓝色文字
-        // },
-        // destructive: {
-        //   DEFAULT: "#dc2626", // 保持红色用于错误状态
-        //   foreground: "#ffffff",
-        // },
-        // muted: {
-        //   DEFAULT: "#f1f5f9", // 浅灰蓝色
-        //   foreground: "#64748b", // 中性蓝灰色
-        // },
-        // accent: {
-        //   DEFAULT: "#dbeafe", // 蓝色强调
-        //   foreground: "#1e40af", // 深蓝色文字
-        // },
-        // popover: {
-        //   DEFAULT: "#ffffff",
-        //   foreground: "#1d4ed8", // 蓝色文字
-        // },
-        // card: {
-        //   DEFAULT: "#ffffff",
-        //   foreground: "#1d4ed8", // 蓝色文字
-        // },
-      },
-      boxShadow: {
-        medical: "0 4px 14px 0 rgba(37, 99, 235, 0.25)", // 蓝色阴影
+        error: {
+          50: "#fef2f2",
+          100: "#fee2e2",
+          200: "#fecaca",
+          300: "#fca5a5",
+          400: "#f87171",
+          500: "#ef4444",
+          600: "#dc2626",
+          700: "#b91c1c",
+          800: "#991b1b",
+          900: "#7f1d1d",
+          950: "#450a0a",
+        },
+        warning: {
+          50: "#fffbeb",
+          100: "#fef3c7",
+          200: "#fde68a",
+          300: "#fcd34d",
+          400: "#fbbf24",
+          500: "#f59e0b",
+          600: "#d97706",
+          700: "#b45309",
+          800: "#92400e",
+          900: "#78350f",
+          950: "#451a03",
+        },
+        success: {
+          50: "#f0fdf4",
+          100: "#dcfce7",
+          200: "#bbf7d0",
+          300: "#86efac",
+          400: "#4ade80",
+          500: "#22c55e",
+          600: "#16a34a",
+          700: "#15803d",
+          800: "#166534",
+          900: "#14532d",
+          950: "#052e16",
+        },
       },
       backgroundImage: {
-        "medical-gradient": "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)", // 蓝色渐变
+        "medical-gradient": "linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)",
+      },
+      boxShadow: {
+        medical: "0 4px 6px -1px rgba(14, 165, 233, 0.1), 0 2px 4px -1px rgba(14, 165, 233, 0.06)",
+        "medical-md": "0 6px 12px -2px rgba(14, 165, 233, 0.15), 0 3px 6px -2px rgba(14, 165, 233, 0.1)",
+        "medical-lg": "0 10px 15px -3px rgba(14, 165, 233, 0.2), 0 4px 6px -2px rgba(14, 165, 233, 0.1)",
+        "medical-xl": "0 20px 25px -5px rgba(14, 165, 233, 0.25), 0 10px 10px -5px rgba(14, 165, 233, 0.15)",
+        "medical-3d":
+          "0 10px 15px -3px rgba(14, 165, 233, 0.2), 0 4px 6px -2px rgba(14, 165, 233, 0.1), 0 -2px 0 0 rgba(255, 255, 255, 0.7) inset, 0 2px 0 0 rgba(3, 105, 161, 0.3) inset",
+        "medical-sm": "0 2px 4px -1px rgba(14, 165, 233, 0.06), 0 1px 2px -1px rgba(14, 165, 233, 0.04)",
       },
       borderRadius: {
         lg: "var(--radius)",

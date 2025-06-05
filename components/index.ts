@@ -4,10 +4,14 @@ export { AppHeader } from "./layout/app-header"
 export { SidebarNav } from "./layout/sidebar-nav"
 export { PageBreadcrumb } from "./layout/page-breadcrumb"
 export { KeyboardShortcutsDialog } from "./layout/keyboard-shortcuts-dialog"
+export { RoleBasedSidebar } from "./layout/role-based-sidebar"
 
 // Navigation Components
 export { UserNav } from "./user-nav"
 export { NavigationSearch } from "./navigation-search"
+export { Breadcrumb } from "./breadcrumb"
+export { TopNav } from "./top-nav"
+export { GlobalNavigation } from "./global-navigation"
 
 // UI Components
 export { Button } from "./ui/button"
@@ -34,8 +38,18 @@ export { ScrollArea } from "./ui/scroll-area"
 export { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 export { Calendar } from "./ui/calendar"
 export { Slider } from "./ui/slider"
+export { LoadingSpinner } from "./ui/loading-spinner"
 
-// 自定义UI组件
+// 医疗专用UI组件
+export { MedicalButton, buttonVariants as medicalButtonVariants } from "./ui/medical-button"
+export {
+  MedicalCard,
+  MedicalCardHeader,
+  MedicalCardFooter,
+  MedicalCardTitle,
+  MedicalCardDescription,
+  MedicalCardContent,
+} from "./ui/medical-card"
 export { DatePicker, DateRangePicker } from "./ui/date-picker"
 export {
   BarChart,
@@ -50,25 +64,36 @@ export {
   medicalChartConfig,
 } from "./ui/chart"
 
-// 医疗专用组件 (需要创建)
-// export { MedicalButton } from "./ui/medical-button"
-// export { MedicalCard } from "./ui/medical-card"
-export { LoadingSpinner } from "./ui/loading-spinner"
-
 // Brand Components
 export { Logo } from "./brand/logo"
 export { ShieldLogo } from "./brand/shield-logo"
+export { AnimatedLogo } from "./brand/animated-logo"
+export { CloudLogo } from "./brand/cloud-logo"
+export { Slogan } from "./brand/slogan"
 
-// Feature Components
-export { ModelDeployment } from "./ai-model-training/model-deployment"
-
-// 错误处理组件 (需要创建)
-// export { SafeWrapper } from "./safe-wrapper"
-// export { GlobalErrorBoundary } from "./error-boundary/global-error-boundary"
+// 错误处理组件
+export { SafeWrapper } from "./safe-wrapper"
+export { GlobalErrorBoundary } from "./error-boundary/global-error-boundary"
+export { ComponentErrorBoundary } from "./error-boundary/component-error-boundary"
+export { NetworkErrorHandler } from "./error-boundary/network-error-handler"
 
 // 开发工具
 export { GlobalComponentTester } from "./dev/global-component-tester"
 export { ComponentFixer } from "./dev/component-fixer"
+export { PerformanceMonitor } from "./dev/performance-monitor"
+export { ErrorTester } from "./dev/error-tester"
+export { NavigationTester } from "./dev/navigation-tester"
 
 // 通用组件
 export { PageHeader } from "./page-header"
+export { QuickFilterMenu } from "./quick-filter-menu"
+export { OfflineNotification } from "./offline-notification"
+export { SplashScreen } from "./splash-screen"
+
+// 功能组件
+export { ModelDeployment } from "./ai-model-training/model-deployment"
+export { NotificationCenter } from "./notifications/notification-center"
+export { FeedbackButton } from "./feedback/feedback-button"
+export { FeedbackDialog } from "./feedback/feedback-dialog"
+export { LanguageSwitcher } from "./language-switcher"
+export { KeyboardShortcutsHelp } from "./keyboard-shortcuts-help"

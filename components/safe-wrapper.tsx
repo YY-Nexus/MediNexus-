@@ -1,51 +1,54 @@
 "use client"
 
-import { Component, type ReactNode } from "react"
-import { AlertTriangle } from "lucide-react"
+import type React from "react"
+import { ErrorBoundary } from "react-error-boundary"
+import { AlertCircle } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
 interface SafeWrapperProps {
-  children: ReactNode
-  fallback?: ReactNode
+  children: React.ReactNode
+  fallback?: React.ReactNode
+  componentName?: string
 }
 
-interface SafeWrapperState {
-  hasError: boolean
-  error?: Error
-}
-
-export class SafeWrapper extends Component<SafeWrapperProps, SafeWrapperState> {
-  constructor(props: SafeWrapperProps) {
-    super(props)
-    this.state = { hasError: false }
-  }
-
-  static getDerivedStateFromError(error: Error): SafeWrapperState {
-    return { hasError: true, error }
-  }
-
-  componentDidCatch(error: Error, errorInfo: any) {
-    console.error("SafeWrapper 捕获到错误:", error, errorInfo)
-  }
-
-  render() {
-    if (this.state.hasError) {
-      if (this.props.fallback) {
-        return this.props.fallback
-      }
-
-      return (
-        <div className="flex flex-col items-center justify-center p-6 border border-red-200 rounded-lg bg-red-50">
-          <AlertTriangle className="h-8 w-8 text-red-500 mb-2" />
-          <h3 className="text-lg font-semibold text-red-800 mb-2">组件加载失败</h3>
-          <p className="text-sm text-red-600 mb-4 text-center">此组件遇到了错误，请尝试刷新页面</p>
-          <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
-            刷新页面
-          </Button>
+function DefaultErrorFallback({
+  componentName,
+  resetErrorBoundary,
+}: { componentName?: string; resetErrorBoundary: () => void }) {
+  return (
+    <Card className="w-full border-error-200 bg-error-50">
+      <CardHeader className="pb-2">
+        <div className="flex items-center gap-2">
+          <AlertCircle className="h-5 w-5 text-error-500" />
+          <CardTitle className="text-sm font-medium text-error-700">组件渲染错误</CardTitle>
         </div>
-      )
-    }
+        <CardDescription className="text-error-600">
+          {componentName ? `"${componentName}" 组件` : "此组件"}加载失败
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Button
+          onClick={resetErrorBoundary}
+          variant="outline"
+          size="sm"
+          className="border-error-200 text-error-700 hover:bg-error-100"
+        >
+          重试
+        </Button>
+      </CardContent>
+    </Card>
+  )
+}
 
-    return this.props.children
-  }
+export function SafeWrapper({ children, fallback, componentName }: SafeWrapperProps) {
+  return (
+    <ErrorBoundary
+      fallbackRender={({ resetErrorBoundary }) =>
+        fallback || <DefaultErrorFallback componentName={componentName} resetErrorBoundary={resetErrorBoundary} />
+      }
+    >
+      {children}
+    </ErrorBoundary>
+  )
 }
