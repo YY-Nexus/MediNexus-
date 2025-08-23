@@ -42,7 +42,7 @@
 1. 克隆仓库
 
 \`\`\`bash
-git clone https://github.com/your-organization/yanyu-medicore.git
+git clone https://github.com/YY-Nexus/MediNexus-.git
 cd yanyu-medicore
 \`\`\`
 
@@ -142,7 +142,7 @@ yanyu-medicore/
 
 如有任何问题或建议，请联系我们：
 
-- 邮箱：support@yanyu-medicore.com
+- 邮箱：china@0379.email
 - 网站：https://www.yanyu-medicore.com
 
 ---
@@ -150,4 +150,4 @@ yanyu-medicore/
 © 2024 言语「医枢」智能诊疗系统 | YanYu "MediCore" Intelligent Diagnostic System
 \`\`\`
 
-更新应用清单文件：
+万象归元于云枢丨深栈智启新纪元
